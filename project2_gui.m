@@ -2,7 +2,7 @@
 function project2_gui()
  
     % Create a window for the GUI
-    window = figure('Color', [0.9255 0.9137 0.8471],...
+    window = figure('Color', [0.9255 0.9137 0.8471],... % change for the main window
                     'Name', 'Time Frequency Demo',...
                     'DockControl', 'off',...
                     'Units', 'Pixels',...
@@ -96,7 +96,7 @@ function project2_gui()
                     'Callback', @sawCallback);
  
     % Set up signal data
-    T=0.01;tmax=1;
+    T=0.001;tmax=1;
     t=0:T:tmax;
     N=length(t);
     fs=1/T;fax=0:fs/N:(N-1)*fs/N;
