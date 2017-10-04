@@ -16,9 +16,18 @@ classdef ui_components
                     'Position', p);
       end
       % plot wrapper
-      function r = Plot(obj, p, pos, labels)
+      function r = Plot(obj, p, pos)
           r = axes('Parent', p, 'Units', 'normalized', 'Position', pos);  
       end
+      
+      function UpdatePlot(obj,p,xdata,ydata,xlbl,ylbl,ttl,xlim,ylim)
+          plot(p, xdata, ydata);
+          xlabel(p, xlbl);
+          ylabel(p, ylbl);
+          title(p, ttl);
+          set(p,'xlim', xlim, 'ylim', ylim);
+      end
+      
       % slider wrapper
       function r = Slider(obj, p, pos, range, val, cb)
           r = uicontrol('Parent', p, 'Style', 'slider', 'Units', 'normalized',...

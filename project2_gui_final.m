@@ -59,24 +59,14 @@ function project2_gui_final()
     N=length(t);
     fs=1/T;fax=0:fs/N:(N-1)*fs/N;
     A=5;f=4;
- 
-    % Set up plot titles and axis labels
-    xlabel(ax1, 'time seconds');
-    ylabel(ax1, 'amplitude')
-    title(ax1, 'Time waveform')
     
-    xlabel(ax2, 'frequency Hz');
-    ylabel(ax2, 'magnitude')
-    title(ax2, 'Magnitude Frequency Spectrum')
- 
-    wave_shape  = 1; % 1 is sin, 2 is squarewave, 3 is sawtooth
+    % 1 is sin, 2 is squarewave, 3 is sawtooth
+    wave_shape  = 1; 
  
     % Call the slider callback function once when the
     % program first runs to make sure that the plots
     % appear immediately (without the user clicking anything)
-    updateGraph()
-    
-    
+    updateGraph();    
  
     % Callback function for "Sine" button
     function sinCallback(hObj, event)
@@ -118,10 +108,12 @@ function project2_gui_final()
         end
  
         X=fft(x)/(N/2);
-        plot(ax1, t, x);
-        set(ax1, 'xlim', [0 1], 'ylim', [-11 11])
-        plot(ax2, fax, abs(X));
-        set(ax2, 'xlim', [0 100], 'ylim', [0 11])
+
+        uic.UpdatePlot(ax1, t, x, 'time seconds', 'amplitude', ...
+                      'Time waveform', [0 1], [-11 11]);
+
+        uic.UpdatePlot(ax2, fax, abs(X), 'frequency Hz', 'magnitude', ...
+                      'Magnitude Frequency Spectrum', [0 100], [0 11]);
  
         % Update frequency and amplitude text
         set(f_edit, 'String', f)
