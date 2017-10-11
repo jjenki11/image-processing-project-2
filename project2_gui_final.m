@@ -17,7 +17,8 @@ function project2_gui_final()
     tab3 = uitab('Parent', tgroup, 'Title', 'Filtering');
     tab4 = uitab('Parent', tgroup, 'Title', 'About');
     
-    set(tgroup,'SelectionChangeCallback',@(obj,evt) tabChangedCB(obj,evt));
+    %set(tgroup,'SelectionChangeFcn',@tabChangedCB); % @(obj,evt) tabChangedCB(obj,evt));
+    tgroup.SelectionChangedFcn = '@tabChangedCB';
 %     i1 = imread('cameraman.tif');
     
 % starting the convolution tab
