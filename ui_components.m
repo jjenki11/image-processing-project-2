@@ -15,6 +15,14 @@ classdef ui_components
                     'Units', 'Pixels',...
                     'Position', p);
       end
+      function r = ImageWindow(obj, p, pos, img)
+          r = axes('Parent', p,...
+                     'Units', 'Normalized',...
+                     'Position', pos);
+          imagesc(img); colormap gray
+          axis off
+          axis image
+      end
       % plot wrapper
       function r = Plot(obj, p, pos)
           r = axes('Parent', p, 'Units', 'normalized', 'Position', pos);  
@@ -26,6 +34,23 @@ classdef ui_components
           ylabel(p, ylbl);
           title(p, ttl);
           set(p,'xlim', xlim, 'ylim', ylim);
+      end
+      
+      function UpdateImage(obj, p, img)
+%           matlabImage = img;
+%             cla
+          imh = imhandles(p); %gets your image handle if you dont know it
+          set(imh,'CData',img);
+          imshow(img); %colormap gray
+          axis off
+          axis image
+%           imshow(img); colormap gray
+      end
+      
+      function r = FileBrowser(obj, p, pos, tbox)
+         [filename, pathname] = ...
+            uigetfile({'*.m';'*.slx';'*.mat';'*.*'},'File Selector');
+            r = strcat(pathname,filename);
       end
       
       % slider wrapper
