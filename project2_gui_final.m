@@ -28,6 +28,10 @@ function project2_gui_final()
     img_offset = 0.001;
     img_size = 0.45;   
     panel_color = [0.9255 0.9137 0.8471];
+    
+    spectrumImageTypes = {'Sinusoids', 'Single Circle', 'Single Rectangle',...
+        'Multiple Circles', 'Multiple Rectangles', 'Single Stripes',...
+        'Multiple Stripes', 'Image from File'};
     filterTypes = {'Impulse Response', 'Frequency Response'};
     impulseResponseTypes = {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
     frequencyResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
@@ -65,9 +69,26 @@ function project2_gui_final()
     conv_button = view.Button(tab1,'convolve',8,[.47,.5,.07,.05],@convCB);    
     
 %% Construct the Spectrum Drawing area
-    spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.1,.1,.8,.8]);    
-    spectrum_message = view.Label(spectrum_panel, 'TBD - Future home of the Draw Spectrum area (with many bells and whistles)', 10, [0.15,0.5, .76, .07]);
-               
+    spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.05,.05,.9,.9]);    
+    
+    spectrum_image_type_label = view.Label(spectrum_panel, 'Type: ', 10, [0.01, 0.91, 0.09, 0.05]);
+    spectrum_imageDD = view.DropDown(spectrum_panel,spectrumImageTypes, [0.115, 0.91, 0.25, 0.05], @spectrumImageTypeDDCallback);
+    % options pane
+    spectrum_image_options_panel = view.Container(spectrum_panel,panel_color,'Options',10,[0.001,.62,.45,.25]);    
+    spectrum_image_panel = view.Container(spectrum_panel,panel_color,'Image',10,[img_offset,.15,img_size,img_size]);   
+    % image of shape
+    spect_img = view.ImageWindow(spectrum_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.125,0, .60, .07]);
+    spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.725, 0, .15, .07], @spectImageFileCB);       
+    % magnitude image
+    magnitude_image_panel = view.Container(spectrum_panel,panel_color,'Magnitude',10,[1-img_size,.50,img_size,img_size]);    
+    magnitude_img = view.ImageWindow(magnitude_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));     
+    % phase image
+    phase_image_panel = view.Container(spectrum_panel,panel_color,'Phase',10,[1-img_size,.05,img_size,img_size]);    
+    phase_img = view.ImageWindow(phase_image_panel, [0.075,0.07, .85, .85], zeros(img_icon)); 
+    draw_spect_button = view.Button(spectrum_panel,'draw spectrum',8,[.15,.05,.17,.05],@drawSpectrumCB); 
+    
+    
 %% Construct the Filtering area
     img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.25,img_size,img_size]);    
     filt_img4 = view.ImageWindow(img4_panel, [0.075,0.07, .85, .85], zeros(img_icon));
@@ -163,6 +184,8 @@ function project2_gui_final()
         view.UpdateImage(filt_img4, model.GetImageIcon(4));
     end
 
+
+
     % opens a file dialog for the user to save the filter result
     function saveFilteredImage(hObj, event)
         xx = model.GetImageData(5);
@@ -171,6 +194,27 @@ function project2_gui_final()
         colormap(gray(255));
         view.FileSaver(tab3, [0.1, 0.37, 0.4, 0.2], mapped_array);
         disp('File saved!');
+    end
+
+    function spectImageFileCB(hObj, event)
+        p = view.FileBrowser(tab2,[0.1 0.37 0.4 0.2],[]);
+        set(spect_img_path,'String',p);
+        img = imread(p); sz = size(img);
+        if(numel(sz)>2) 
+            img = rgb2gray(img); 
+        end
+        model.CreateImage(6, img, imresize(img,img_icon));        
+        view.UpdateImage(spect_img, model.GetImageIcon(6));
+    end
+
+    function drawSpectrumCB(hObj, event)
+        disp('drawing spectrum.')
+    end
+
+    % Callback function for spectrum drawing image type dropdown
+    function spectrumImageTypeDDCallback(hObj, event)
+        txt = spectrumImageTypes{get(spectrum_imageDD, 'Value')};
+        disp(txt)
     end
     
     % Callback function for filter dropdown
