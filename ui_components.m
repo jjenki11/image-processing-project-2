@@ -30,8 +30,7 @@ classdef ui_components
                      'Position', pos);
           imagesc(img); colormap gray;
           axis off
-          axis image
-          
+          axis image          
       end
       
       % plot wrapper
@@ -50,8 +49,7 @@ classdef ui_components
       
       % Updates an image on the GUI by it's handle object
       function UpdateImage(obj, p, img)
-          imh = imhandles(p); %gets your image handle if you dont know it
-          set(imh,'CData',img);
+          set(imhandles(p),'CData',img);
           colormap gray;
           axis off
           axis image
@@ -60,13 +58,13 @@ classdef ui_components
       % Opens a browser to find a file in your file system
       function r = FileBrowser(obj, p, pos, tbox)
          [filename, pathname] = ...
-            uigetfile({'*.jpg';'*.png';'*.bmp';},'Image Selector');
+            uigetfile({'*.*';'*.tif';'*.jpg';'*.png';'*.bmp';},'Load file...');
             r = strcat(pathname,filename);
       end
       
       % Opens a browser to save a file in your file system
       function r = FileSaver(obj, p, pos, img)
-         [file,path] = uiputfile('*.*','Save convolved image file');
+         [file,path] = uiputfile('*.*','Save file to disk...');
          r = strcat(path, file);
          imwrite(img, r);
       end

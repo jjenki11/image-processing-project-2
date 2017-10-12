@@ -5,6 +5,7 @@
 function project2_gui_final()
  
 %% Construct object oriented classes to manage back-end
+
 % This is our ui wrapper class
     view = ui_components();    
 % This is our model factory class
