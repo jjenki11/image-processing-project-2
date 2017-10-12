@@ -1,150 +1,173 @@
-% another test comment
+%% Project 2 GUI driver
+
+
+%%
 function project2_gui_final()
  
-    % This is our ui wrapper class
-    view = ui_components();
+%% Construct object oriented classes to manage back-end
+% This is our ui wrapper class
+    view = ui_components();    
+% This is our model factory class
+    model = model_factory();   
     
-    % Create the main container
-    window = view.Container([0.9255 0.9137 0.8471],'Demo',[100 50 800 600]);   
+%% define some ui parameters
     
-    % This is an ugly little section... cant get it to work when wrapping
-    % it in the ui_components class
+%   ui normalized position key    
+%    _____________________
+%   |0,1               1,1|
+%   |                     |
+%   |                     |
+%   |                     |
+%   |0,0               1,0|
+%    _____________________    
+
+    win_size = [800 800];
+    win_pos  = [100  50];
+    img_icon = [250 250];    
+    img_offset = 0.001;
+    img_size = 0.45;   
+    panel_color = [0.9255 0.9137 0.8471];
+
+%% Construct the main window (frame)
+    window = view.Frame(panel_color,'Project 2',[win_pos win_size]);   
+    
+%% Construct a tab group.  TBD lets find the 'deprecated' issue w.r.t. tabs
     tgroup = uitabgroup('Parent', window);
     tab0 = uitab('Parent', tgroup, 'Title', 'Home');
-    tab1a = uitab('Parent', tgroup, 'Title', 'Convolution');
-    tab1 = uitab('Parent', tgroup, 'Title', 'Convolution (testing)');
+    tab1 = uitab('Parent', tgroup, 'Title', 'Convolution');
     tab2 = uitab('Parent', tgroup, 'Title', 'Draw Spectrum');
     tab3 = uitab('Parent', tgroup, 'Title', 'Filtering');
-    tab4 = uitab('Parent', tgroup, 'Title', 'About');
+    tab4 = uitab('Parent', tgroup, 'Title', 'About');       
     
-    %set(tgroup,'SelectionChangeFcn',@tabChangedCB); % @(obj,evt) tabChangedCB(obj,evt));
-    tgroup.SelectionChangedFcn = '@tabChangedCB';
-%     i1 = imread('cameraman.tif');
+%% Construct the Home area
+    home_panel = view.Container(tab0,panel_color,'Home - Project 2',10,[.05,.05,.9,.9]);    
+    home_img1 = view.ImageWindow(home_panel, [0.075,0.07, .85, .85], zeros(600,800));
+    home_message = view.Label(home_panel,  'TBD - Future home screen for the Project 2 GUI', 10, [0.12,.93, .76, .045]);
+    view.UpdateImage(home_img1, imread('CUA_logo.jpg'));
     
-% starting the convolution tab
-    conv_img1 = view.ImageWindow(tab1a,[0.07 0.37 0.50 0.58],zeros(500,500)); 
-    img1_path = view.Edit(tab1a,8,[0.07 0.6 0.3 0.08]); 
-    img1_browser = view.Button(tab1a,'...',12,[0.37 0.6 0.09 0.08],@file1CB);
+%% Construct the convolution area
+    img1_panel = view.Container(tab1,panel_color,'Image 1',10,[img_offset,1-(img_size+img_offset),img_size,img_size]);    
+    conv_img1 = view.ImageWindow(img1_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    img1_path = view.Edit(img1_panel, 8, [0.125,0, .60, .07]);
+    img1_btn  = view.Button(img1_panel, 'load', 8, [.725, 0, .15, .07], @file1CB);    
+    img2_panel = view.Container(tab1,panel_color,'Image 2',10,[img_offset,1-2*(img_size+img_offset),img_size,img_size]);
+    conv_img2 = view.ImageWindow(img2_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    img2_path = view.Edit(img2_panel, 8, [0.125,0, .60, .07]);
+    img2_btn  = view.Button(img2_panel, 'load', 8, [.725, 0, .15, .07], @file2CB);    
+    img3_panel = view.Container(tab1,panel_color,'Result',10,[1-img_size,.35,img_size,img_size]);
+    conv_img3 = view.ImageWindow(img3_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    img3_save_btn = view.Button(img3_panel, 'Save', 8, [0.125, 0, .19, .07], @saveImage);
+    img3_reset_btn  = view.Button(img3_panel, 'reset', 8, [.725, 0, .19, .07], @resetImage);    
+    conv_button = view.Button(tab1,'convolve',8,[.47,.5,.07,.05],@convCB);    
     
-    conv_img2 = view.ImageWindow(tab1a,[0.07 0.01 0.50 0.58],zeros(500,500)); 
-    img2_path = view.Edit(tab1a,8,[0.07 0.2 0.3 0.08]); 
-    img2_browser = view.Button(tab1a,'...',12,[0.37 0.2 0.09 0.08],@file2CB);
+%% Construct the Spectrum Drawing area
+    spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.1,.1,.8,.8]);    
+    spectrum_message = view.Label(spectrum_panel, 'TBD - Future home of the Draw Spectrum area (with many bells and whistles)', 10, [0.15,0.5, .76, .07]);
+               
+%% Construct the Filtering area
+    img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.25,img_size,img_size]);    
+    filt_img4 = view.ImageWindow(img4_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    img4_path = view.Edit(img4_panel, 8, [0.125,0, .60, .07]);
+    img4_btn  = view.Button(img4_panel, 'load', 8, [.725, 0, .15, .07], @file4CB);    
+    img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.25,img_size,img_size]);
+    filt_img5 = view.ImageWindow(img5_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    img5_save_btn = view.Button(img5_panel, 'Save', 8, [0.125, 0, .19, .07], @saveFilteredImage);    
+    filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);
     
+%% Construct the About area
+    about_panel = view.Container(tab4,panel_color,'About this software',10,[.1,.1,.8,.8]);    
+    about_message = view.Label(about_panel, 'TBD - Future home of the about area (description of the project)!', 10, [0.2,0.5, .60, .07]);
     
-                      
-    % Add axes on left side for time domain plot
-    ax1 = view.Plot(tab1,[0.07 0.37 0.40 0.58]); 
-    % Add axes on right side for frequency domain plot
-    ax2 = view.Plot(tab1,[0.55 0.37 0.40 0.58]); 
-    % Add "Frequency" slider control to window
-    f_slider = view.Slider(tab1,[0.2 0.22 0.6 0.08],[0 100],10,@updateGraph); 
-    % Add "Amplitude" slider control to window
-    A_slider = view.Slider(tab1,[0.2 0.12 0.6 0.08],[0 10],5,@updateGraph); 
-    % Add "Frequency" edit control to window
-    f_edit = view.Edit(tab1,18,[0.82 0.22 0.16 0.08]); 
-    % Add "Amplitude" edit control to window
-    A_edit = view.Edit(tab1,18,[0.82 0.12 0.16 0.08]); 
-    % Add "Frequency" label control to window
-    f_label = view.Label(tab1,'Frequency:',18,[0.02 0.22 0.16 0.08]); 
-    % Add "Amplitude" label control to window
-    A_label = view.Label(tab1,'Amplitude:',18,[0.02 0.12 0.16 0.08]); 
-    % Add "Sin" button to window
-    sin_button = view.Button(tab1,'Sine',18,[0.22 0.02 0.16 0.08],@sinCallback); 
-    % Add "Square" button to window
-    sqr_button = view.Button(tab1,'Square',18,[0.42 0.02 0.16 0.08],@sqrCallback); 
-    % Add "Saw" button to window
-    saw_button = view.Button(tab1,'Saw',18,[0.62 0.02 0.16 0.08],@sawCallback);    
-    % Set up signal data
-    T=0.001;tmax=1;
-    t=0:T:tmax;
-    N=length(t);
-    fs=1/T;fax=0:fs/N:(N-1)*fs/N;
-    A=5;f=4;    
-    % 1 is sin, 2 is squarewave, 3 is sawtooth
-    wave_shape  = 1; 
- 
-    % Call the slider callback function once when the
-    % program first runs to make sure that the plots
-    % appear immediately (without the user clicking anything)
-    updateGraph();    
+%% Define the callbacks for buttons etc.  
+%   TBD - create controller class which will house all callbacks 
+%   for every aspect of the UI
+
+    % Callback function for "browser" button (image 1)
+    function file1CB(hObj, event)
+        p = view.FileBrowser(tab1,[0.1 0.37 0.4 0.2],[]);
+        set(img1_path,'String',p);
+        img = imread(p); sz = size(img);
+        if(numel(sz)>2) 
+            img = rgb2gray(img); 
+        end
+        model.CreateImage(1, img, imresize(img,img_icon));        
+        view.UpdateImage(conv_img1, model.GetImageIcon(1));
+    end
+
+    % Callback function for "browser" button (image 2)
+    function file2CB(hObj, event)
+        p = view.FileBrowser(tab1,[0.1 0.37 0.4 0.2],[]);
+        set(img2_path,'String',p);
+        img = imread(p); sz = size(img);
+        if(numel(sz)>2) 
+            img = rgb2gray(img); 
+        end        
+        model.CreateImage(2, img, imresize(img,img_icon));        
+        view.UpdateImage(conv_img2, model.GetImageIcon(2));
+    end
+
+    % resets the convolved image result to a blank image
+    function resetImage(hObj, event)
+        view.UpdateImage(conv_img3, zeros(img_icon));
+    end
+
+    % opens a file dialog for the user to save the convolution result
+    function saveImage(hObj, event)
+        xx = model.GetImageData(3);
+        maxv = max(xx(:));
+        mapped_array = uint8((double(xx) ./ maxv) .* 255);
+        colormap(gray(255));
+        view.FileSaver(tab1, [0.1, 0.37, 0.4, 0.2], mapped_array);
+        disp('File saved!');
+    end    
+
+    % Callback function for "Convolve" button
+    function convCB(hObj, event)
+        % This is the convolution wrapper class
+        convolution = algorithm_tools(model);        
+        convolution.ConvolveImages(1,2);        
+        x = convolution.GetResult();        
+        model.CreateImage(3, x, imresize(x,img_icon));
+        view.UpdateImage(conv_img3, model.GetImageIcon(3));
+    end  
     
-    
-    
+    % Callback function for "browser" button (image 1)
+    function file4CB(hObj, event)
+        p = view.FileBrowser(tab3,[0.1 0.37 0.4 0.2],[]);
+        set(img4_path,'String',p);
+        img = imread(p); sz = size(img);
+        if(numel(sz)>2) 
+            img = rgb2gray(img); 
+        end
+        model.CreateImage(4, img, imresize(img,img_icon));        
+        view.UpdateImage(filt_img4, model.GetImageIcon(4));
+    end
+
+    % opens a file dialog for the user to save the filter result
+    function saveFilteredImage(hObj, event)
+        xx = model.GetImageData(5);
+        maxv = max(xx(:));
+        mapped_array = uint8((double(xx) ./ maxv) .* 255);
+        colormap(gray(255));
+        view.FileSaver(tab3, [0.1, 0.37, 0.4, 0.2], mapped_array);
+        disp('File saved!');
+    end
+
+    % Callback function for "filter" button
+    function filtCB(hObj, event)
+        % This is the convolution wrapper class
+        med_filter = algorithm_tools(model);     
+        nhood_rows = 25 ;
+        nhood_cols = 25 ;
+        med_filter.FilterImage(4,[nhood_rows, nhood_cols]);        
+        x = med_filter.GetResult();        
+        model.CreateImage(5, x, imresize(x,img_icon));
+        view.UpdateImage(filt_img5, model.GetImageIcon(5));
+    end 
+     
     % A dropdown test
     %test_dd = view.DropDown(tab1,{'a', 'b', 'c', 'd'}, [0.62 0.02 0.16 0.08], @sawCallback);
+        
     
-    
-    
- 
-    % Callback function for "Sine" button
-    function sinCallback(hObj, event)
-        wave_shape = 1;
-        updateGraph()
-    end
-
-    % Callback function for "browser" button
-    function file1CB(hObj, event)
-%         wave_shape = 1;
-        disp('yoyoma')
-        p = view.FileBrowser(tab1a,[0.1 0.37 0.4 0.2],[]);
-        set(img1_path,'String',p);
-%         disp(p)
-    end
-
-    % Callback function for "browser" button
-    function file2CB(hObj, event)
-%         wave_shape = 1;
-        disp('yoyoma')
-        p = view.FileBrowser(tab1a,[0.1 0.37 0.4 0.2],[]);
-        set(img2_path,'String',p);
-    end
- 
-    % Callback function for "Square" button
-    function sqrCallback(hObj, event)
-        wave_shape = 2;
-        updateGraph()
-    end
- 
-    % Callback function for "Saw" button
-    function sawCallback(hObj, event)
-        wave_shape = 3;
-        updateGraph()
-    end
-
-    % Callback for tab change
-    function tabChangedCB(hObj, event)
-        tabName = event.OldValue.Title;
-        if strcmp(tabName, 'Home')
-            disp('byebyeconvolution')
-            view.UpdateImage(conv_img1, imread('cameraman.tif'));
-            view.UpdateImage(conv_img2, imread('cameraman.tif'));
-        end
-    end
- 
-    % Callback funuction for both slider controls
-    function updateGraph(hObj, event)
-        f = get(f_slider, 'Value')
-        A = get(A_slider, 'Value')
- 
-        if wave_shape == 1
-            x = A*cos(2*pi*f*t);
-        elseif wave_shape == 2
-            x = A*square(2*pi*f*t);
-        else
-            x = A*sawtooth(2*pi*f*t);
-        end
- 
-        X=fft(x)/(N/2);
-
-        view.UpdatePlot(ax1, t, x, 'time seconds', 'amplitude', ...
-                      'Time waveform', [0 1], [-11 11]);
-
-        view.UpdatePlot(ax2, fax, abs(X), 'frequency Hz', 'magnitude', ...
-                      'Magnitude Frequency Spectrum', [0 100], [0 11]);
- 
-        % Update frequency and amplitude text
-        set(f_edit, 'String', f)
-        set(A_edit, 'String', A)
-    end
  
 end

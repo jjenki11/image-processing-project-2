@@ -7,27 +7,39 @@ classdef ui_components
       function obj = ui_components()
             % all initializations, calls to base class, etc. here,
       end
-      % container wrapper
-      function r = Container(obj, c, n, p)
-         r = figure('Color', c,...
+      % frame wrapper
+      function r = Frame(obj, c,n,p)
+          r = figure('Color', c,...
                     'Name',  n,...
                     'DockControl', 'off',...
                     'Units', 'Pixels',...
+                    'Resize','off',...
                     'Position', p);
       end
+      
+      % container wrapper
+      function r = Container(obj, p, c, t, fs, pos)
+         r = uipanel('Parent', p, 'Title', t, 'BackgroundColor',c,...
+             'FontSize', fs, 'Units', 'normalized', 'Position', pos);
+      end
+        
+      % image wrapper
       function r = ImageWindow(obj, p, pos, img)
           r = axes('Parent', p,...
-                     'Units', 'Normalized',...
+                     'Units', 'normalized',...
                      'Position', pos);
-          imagesc(img); colormap gray
+          imagesc(img); colormap gray;
           axis off
           axis image
+          
       end
+      
       % plot wrapper
       function r = Plot(obj, p, pos)
           r = axes('Parent', p, 'Units', 'normalized', 'Position', pos);  
       end
       
+      % Updates a plot object by its handle
       function UpdatePlot(obj,p,xdata,ydata,xlbl,ylbl,ttl,xlim,ylim)
           plot(p, xdata, ydata);
           xlabel(p, xlbl);
@@ -36,21 +48,27 @@ classdef ui_components
           set(p,'xlim', xlim, 'ylim', ylim);
       end
       
+      % Updates an image on the GUI by it's handle object
       function UpdateImage(obj, p, img)
-%           matlabImage = img;
-%             cla
           imh = imhandles(p); %gets your image handle if you dont know it
           set(imh,'CData',img);
-          imshow(img); %colormap gray
+          colormap gray;
           axis off
           axis image
-%           imshow(img); colormap gray
       end
       
+      % Opens a browser to find a file in your file system
       function r = FileBrowser(obj, p, pos, tbox)
          [filename, pathname] = ...
-            uigetfile({'*.m';'*.slx';'*.mat';'*.*'},'File Selector');
+            uigetfile({'*.jpg';'*.png';'*.bmp';},'Image Selector');
             r = strcat(pathname,filename);
+      end
+      
+      % Opens a browser to save a file in your file system
+      function r = FileSaver(obj, p, pos, img)
+         [file,path] = uiputfile('*.*','Save convolved image file');
+         r = strcat(path, file);
+         imwrite(img, r);
       end
       
       % slider wrapper
