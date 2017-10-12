@@ -93,9 +93,9 @@ classdef ui_components
                         'Position', pos, 'Callback', cb);
       end
       % dropdown wrapper
-      function r = DropDown(obj, p, list, pos)
+      function r = DropDown(obj, p, list, pos, cb)
           r = uicontrol('Parent', p, 'Style', 'popup', 'String', list,...
-                        'Units','normalized','Position', pos);
+                        'Units','normalized','Position', pos, 'Callback', cb);
       end
       
    end

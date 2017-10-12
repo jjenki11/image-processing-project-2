@@ -28,6 +28,9 @@ function project2_gui_final()
     img_offset = 0.001;
     img_size = 0.45;   
     panel_color = [0.9255 0.9137 0.8471];
+    filterTypes = {'Impulse Response', 'Frequency Response'};
+    impulseResponseTypes = {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
+    frequencyResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
 
 %% Construct the main window (frame)
     window = view.Frame(panel_color,'Project 2',[win_pos win_size]);   
@@ -73,6 +76,22 @@ function project2_gui_final()
     img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.25,img_size,img_size]);
     filt_img5 = view.ImageWindow(img5_panel, [0.075,0.07, .85, .85], zeros(img_icon));
     img5_save_btn = view.Button(img5_panel, 'Save', 8, [0.125, 0, .19, .07], @saveFilteredImage);    
+    
+    filter_select_panel = view.Container(tab3,panel_color,'Select', 10, [.001, .75, img_size,img_size/2]);
+    ftechnique_label = view.Label(filter_select_panel, 'Technique:', 10, [0.001 0.71 0.25 0.15]);
+    filterDD = view.DropDown(filter_select_panel,filterTypes, [0.27 0.71 0.5 0.15], @filterTypeDDCallback);
+    ftype_label = view.Label(filter_select_panel, 'Type:', 10, [0.001 0.35 0.25 0.15]);
+    impRespDD = view.DropDown(filter_select_panel,impulseResponseTypes, [0.27 0.02 0.5 0.5], @impulseTypeDDCallback);
+    set(impRespDD,'Visible','off');
+    freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqTypeDDCallback);
+    set(freqRespDD,'Visible','off');
+    
+    filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
+    
+    %   This is where all of the input widgets will go    
+    %   Set up parameter inputs for all of these filter types in a new
+    %   group
+    
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);
     
 %% Construct the About area
@@ -153,6 +172,34 @@ function project2_gui_final()
         view.FileSaver(tab3, [0.1, 0.37, 0.4, 0.2], mapped_array);
         disp('File saved!');
     end
+    
+    % Callback function for filter dropdown
+    function filterTypeDDCallback(hObj, event)
+        txt = filterTypes{get(filterDD, 'Value')};
+        disp(txt)
+        if(strcmp(txt,'Impulse Response') == 0)
+            set(freqRespDD,'Visible', 'off');
+            set(impRespDD,'Visible', 'on');
+            disp('Impulse response selected.')
+        else
+            set(freqRespDD,'Visible', 'on');
+            set(impRespDD,'Visible', 'off');
+            disp('Frequency response selected.')
+        end
+        
+    end
+
+    % Callback function for impulse response dropdown
+    function impulseTypeDDCallback(hObj,event)
+        txt = impulseResponseTypes{get(impRespDD, 'Value')};
+        disp(txt)
+    end
+
+    % Callback function for frequency response dropdown
+    function freqTypeDDCallback(hObj, event)
+        txt = frequencyResponseTypes{get(freqRespDD, 'Value')};
+        disp(txt)
+    end
 
     % Callback function for "filter" button
     function filtCB(hObj, event)
@@ -166,9 +213,4 @@ function project2_gui_final()
         view.UpdateImage(filt_img5, model.GetImageIcon(5));
     end 
      
-    % A dropdown test
-    %test_dd = view.DropDown(tab1,{'a', 'b', 'c', 'd'}, [0.62 0.02 0.16 0.08], @sawCallback);
-        
-    
- 
 end
