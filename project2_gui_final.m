@@ -50,7 +50,7 @@ function project2_gui_final()
 %% Construct the Home area
     home_panel = view.Container(tab0,panel_color,'Home - Project 2',10,[.05,.05,.9,.9]);    
     home_img1 = view.ImageWindow(home_panel, [0.075,0.07, .85, .85], zeros(600,800));
-    home_message = view.Label(home_panel,  'TBD - Future home screen for the Project 2 GUI', 10, [0.12,.93, .76, .045]);
+    home_message = view.Label(home_panel,  'Welcome home! This is our Project 2 GUI!', 10, [0.12,.93, .76, .045]);
     view.UpdateImage(home_img1, imread('CUA_logo.jpg'));
     
 %% Construct the convolution area
@@ -184,8 +184,6 @@ function project2_gui_final()
         view.UpdateImage(filt_img4, model.GetImageIcon(4));
     end
 
-
-
     % opens a file dialog for the user to save the filter result
     function saveFilteredImage(hObj, event)
         xx = model.GetImageData(5);
@@ -208,7 +206,19 @@ function project2_gui_final()
     end
 
     function drawSpectrumCB(hObj, event)
-        disp('drawing spectrum.')
+        %   Magnitude
+        spect_mag = algorithm_tools(model);     
+        spect_mag.MagnitudeImage(6);        
+        x = spect_mag.GetResult();        
+        model.CreateImage(7, x, imresize(x,img_icon));
+        view.UpdateImage(magnitude_img, model.GetImageIcon(7));
+        
+        %   Phase
+        spect_phase = algorithm_tools(model);     
+        spect_phase.PhaseImage(6);        
+        x2 = spect_phase.GetResult();        
+        model.CreateImage(8, x2, imresize(x2,img_icon));
+        view.UpdateImage(phase_img, model.GetImageIcon(8));        
     end
 
     % Callback function for spectrum drawing image type dropdown

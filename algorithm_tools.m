@@ -11,7 +11,7 @@ classdef algorithm_tools < handle
             % all initializations, calls to base class, etc. here,
             obj.SetModel(dm);
       end
-      % container wrapper
+      % conv2 wrapper
       function obj = ConvolveImages(obj, idx1, idx2)
         i1 = obj.GetModel().GetImageData(idx1);
         i2 = obj.GetModel().GetImageData(idx2);
@@ -23,6 +23,28 @@ classdef algorithm_tools < handle
         cr = medfilt2(double(i1), nhood); % TBD make this proper
         obj.SetResult(cr);
       end
+      
+      function obj = MagnitudeImage(obj, idx)
+        in = obj.GetModel().GetImageData(idx);
+        X=fftshift(fft2(in));
+        [sy,sx]=size(in);
+        w1=linspace(-pi,pi,sx);
+        w2=linspace(-pi,pi,sy);
+        offset=1;   % tbd change to parameter
+        mag=imlinxy(w1,w2,log(abs(X)+offset));
+        obj.SetResult(mag);        
+      end
+      
+      function obj = PhaseImage(obj, idx)
+        in = obj.GetModel().GetImageData(idx);
+        X=fftshift(fft2(in));
+        [sy,sx]=size(in);
+        w1=linspace(-pi,pi,sx);
+        w2=linspace(-pi,pi,sy);
+        phase=imlinxy(w1,w2,angle(X));
+        obj.SetResult(phase);
+      end
+      
       % gets the model
       function r = GetModel(obj)
           r = obj.DataModel;
