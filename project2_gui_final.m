@@ -6,10 +6,12 @@ function project2_gui_final()
  
 %% Construct object oriented classes to manage back-end
 
-% This is our ui wrapper class
+% This is our view (ui wrapper) class
     view = ui_components();    
 % This is our model factory class
     model = model_factory();   
+% This is our controller class
+    ctrl = controller(model,view);
     
 %% define some ui parameters
     
@@ -33,7 +35,7 @@ function project2_gui_final()
         'Multiple Circles', 'Multiple Rectangles', 'Single Stripes',...
         'Multiple Stripes', 'Image from File'};
     filterTypes = {'Impulse Response', 'Frequency Response'};
-    impulseResponseTypes = {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
+    impulseResponseTypes = {'median', 'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
     frequencyResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
 
 %% Construct the main window (frame)
@@ -125,86 +127,44 @@ function project2_gui_final()
 
     % Callback function for "browser" button (image 1)
     function file1CB(hObj, event)
-        p = view.FileBrowser(tab1,[0.1 0.37 0.4 0.2],[]);
-        set(img1_path,'String',p);
-        img = imread(p); sz = size(img);
-        if(numel(sz)>2) 
-            img = rgb2gray(img); 
-        end
-        model.CreateImage(1, img, imresize(img,img_icon));        
-        view.UpdateImage(conv_img1, model.GetImageIcon(1));
+        ctrl.SelectFile(tab1, img1_path, 1, conv_img1);
     end
 
     % Callback function for "browser" button (image 2)
     function file2CB(hObj, event)
-        p = view.FileBrowser(tab1,[0.1 0.37 0.4 0.2],[]);
-        set(img2_path,'String',p);
-        img = imread(p); sz = size(img);
-        if(numel(sz)>2) 
-            img = rgb2gray(img); 
-        end        
-        model.CreateImage(2, img, imresize(img,img_icon));        
-        view.UpdateImage(conv_img2, model.GetImageIcon(2));
+        ctrl.SelectFile(tab1, img2_path, 2, conv_img2);
+    end
+
+    % Callback function for "browser" button (image 1)
+    function file4CB(hObj, event)
+        ctrl.SelectFile(tab3, img4_path, 4, filt_img4);
+    end
+
+    function spectImageFileCB(hObj, event)
+        ctrl.SelectFile(tab2, spect_img_path, 6, spect_img);
     end
 
     % resets the convolved image result to a blank image
     function resetImage(hObj, event)
-        view.UpdateImage(conv_img3, zeros(img_icon));
+        ctrl.Reset(conv_img3, zeros(img_icon));        
     end
 
     % opens a file dialog for the user to save the convolution result
     function saveImage(hObj, event)
-        xx = model.GetImageData(3);
-        maxv = max(xx(:));
-        mapped_array = uint8((double(xx) ./ maxv) .* 255);
-        colormap(gray(255));
-        view.FileSaver(tab1, [0.1, 0.37, 0.4, 0.2], mapped_array);
-        disp('File saved!');
+        ctrl.SaveImage(3, tab1);
     end    
 
     % Callback function for "Convolve" button
     function convCB(hObj, event)
-        % This is the convolution wrapper class
-        convolution = algorithm_tools(model);        
-        convolution.ConvolveImages(1,2);        
-        x = convolution.GetResult();        
-        model.CreateImage(3, x, imresize(x,img_icon));
-        view.UpdateImage(conv_img3, model.GetImageIcon(3));
+        ctrl.DoConvolution(conv_img3);
     end  
-    
-    % Callback function for "browser" button (image 1)
-    function file4CB(hObj, event)
-        p = view.FileBrowser(tab3,[0.1 0.37 0.4 0.2],[]);
-        set(img4_path,'String',p);
-        img = imread(p); sz = size(img);
-        if(numel(sz)>2) 
-            img = rgb2gray(img); 
-        end
-        model.CreateImage(4, img, imresize(img,img_icon));        
-        view.UpdateImage(filt_img4, model.GetImageIcon(4));
-    end
 
     % opens a file dialog for the user to save the filter result
-    function saveFilteredImage(hObj, event)
-        xx = model.GetImageData(5);
-        maxv = max(xx(:));
-        mapped_array = uint8((double(xx) ./ maxv) .* 255);
-        colormap(gray(255));
-        view.FileSaver(tab3, [0.1, 0.37, 0.4, 0.2], mapped_array);
-        disp('File saved!');
+    function saveFilteredImage(hObj, event)        
+        ctrl.SaveImage(5, tab3);        
     end
 
-    function spectImageFileCB(hObj, event)
-        p = view.FileBrowser(tab2,[0.1 0.37 0.4 0.2],[]);
-        set(spect_img_path,'String',p);
-        img = imread(p); sz = size(img);
-        if(numel(sz)>2) 
-            img = rgb2gray(img); 
-        end
-        model.CreateImage(6, img, imresize(img,img_icon));        
-        view.UpdateImage(spect_img, model.GetImageIcon(6));
-    end
-
+    %   TBD - will get to this tomorrow, Friday the 13th!
     function drawSpectrumCB(hObj, event)
         %   Magnitude
         spect_mag = algorithm_tools(model);     
@@ -239,8 +199,7 @@ function project2_gui_final()
             set(freqRespDD,'Visible', 'on');
             set(impRespDD,'Visible', 'off');
             disp('Frequency response selected.')
-        end
-        
+        end        
     end
 
     % Callback function for impulse response dropdown
@@ -258,13 +217,16 @@ function project2_gui_final()
     % Callback function for "filter" button
     function filtCB(hObj, event)
         % This is the convolution wrapper class
-        med_filter = algorithm_tools(model);     
-        nhood_rows = 25 ;
-        nhood_cols = 25 ;
-        med_filter.FilterImage(4,[nhood_rows, nhood_cols]);        
-        x = med_filter.GetResult();        
-        model.CreateImage(5, x, imresize(x,img_icon));
-        view.UpdateImage(filt_img5, model.GetImageIcon(5));
+        nhood_rows = 25 ;% some example values we will put in config widgets
+        nhood_cols = 25 ;% some example values we will put in config widgets
+        txt = filterTypes{get(filterDD, 'Value')};
+        if(strcmp(txt,'Impulse Response') == 0)
+            ctrl.DoFiltering(impulseResponseTypes{get(impRespDD, 'Value')},...
+                [nhood_rows, nhood_cols], filt_img5);
+        else
+            ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD, 'Value')},...
+                [nhood_rows, nhood_cols], filt_img5);
+        end
     end 
      
 end

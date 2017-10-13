@@ -18,7 +18,7 @@ classdef algorithm_tools < handle
         cr = conv2(double(i1),double(i2),'same'); % TBD make this proper
         obj.SetResult(cr);
       end        
-      function obj = FilterImage(obj, idx, nhood)
+      function obj = MedianFilter(obj, idx, nhood)
         i1 = obj.GetModel().GetImageData(idx);
         cr = medfilt2(double(i1), nhood); % TBD make this proper
         obj.SetResult(cr);
