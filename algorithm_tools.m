@@ -24,6 +24,12 @@ classdef algorithm_tools < handle
         obj.SetResult(cr);
       end
       
+      function obj = AverageFilter(obj, idx, nhood)
+        i1 = obj.GetModel().GetImageData(idx);
+        cr = filter2(fspecial('average',nhood),i1);
+        obj.SetResult(cr);
+      end
+      
       function obj = MagnitudeImage(obj, idx)
         in = obj.GetModel().GetImageData(idx);
         X=fftshift(fft2(in));

@@ -114,6 +114,10 @@ function project2_gui_final()
     %   This is where all of the input widgets will go    
     %   Set up parameter inputs for all of these filter types in a new
     %   group
+    filter_size_label_x = view.Label(filter_config_panel, 'Size (x):', 10, [0.001 0.71 0.25 0.15]);
+    filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.71 0.25 0.15]);
+    filter_size_label_y = view.Label(filter_config_panel, 'Size (y):', 10, [0.001 0.6 0.25 0.15]);
+    filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.6 0.25 0.15]);
     
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);
     
@@ -217,9 +221,18 @@ function project2_gui_final()
     % Callback function for "filter" button
     function filtCB(hObj, event)
         % This is the convolution wrapper class
-        nhood_rows = 25 ;% some example values we will put in config widgets
-        nhood_cols = 25 ;% some example values we will put in config widgets
+        s = get(filter_size_value_x, 'String')
+        s=str2num(s(1));
+        t = get(filter_size_value_y, 'String')
+        
+        t=str2num(t(1));
+        
+        nhood_rows = s ;% some example values we will put in config widgets
+        nhood_cols = t ;% some example values we will put in config widgets
+        
         txt = filterTypes{get(filterDD, 'Value')};
+        
+        
         if(strcmp(txt,'Impulse Response') == 0)
             ctrl.DoFiltering(impulseResponseTypes{get(impRespDD, 'Value')},...
                 [nhood_rows, nhood_cols], filt_img5);

@@ -52,7 +52,8 @@ classdef controller < handle
                 x = obj.DoMedianFilter(params);
                 obj.GenerateImageIcon(5, x, dest);
             case 'average'
-                disp('TBD - implement average filter')
+                x = obj.DoAverageFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'disk'
                 disp('TBD - implement disk filter')
             case 'gaussian'
@@ -88,6 +89,12 @@ classdef controller < handle
       function r = DoMedianFilter(obj, params)      
         med_filter = algorithm_tools(obj.GetModel());     
         med_filter.MedianFilter(4,[params(1), params(2)]);        
+        r = med_filter.GetResult();          
+      end
+      
+       function r = DoAverageFilter(obj, params)      
+        med_filter = algorithm_tools(obj.GetModel());     
+        med_filter.AverageFilter(4,params(1));        
         r = med_filter.GetResult();          
       end
       
