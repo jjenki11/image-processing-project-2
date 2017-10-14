@@ -106,6 +106,20 @@ classdef ui_components
             set(vArray(i), 'String', 0); 
          end         
       end
+      % display widgets
+      function ShowWidgets(obj, vArray)
+         n=max(size(vArray));
+         for i=1:n
+            set(vArray(i), 'Visible', 'on'); 
+         end         
+      end
+      % hide widgets
+      function HideWidgets(obj, vArray)
+         n=max(size(vArray));
+         for i=1:n
+            set(vArray(i), 'Visible', 'off'); 
+         end         
+      end
       
    end
 end

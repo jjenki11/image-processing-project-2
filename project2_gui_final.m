@@ -34,9 +34,9 @@ function project2_gui_final()
     spectrumImageTypes = {'Sinusoids', 'Single Circle', 'Single Rectangle',...
         'Multiple Circles', 'Multiple Rectangles', 'Single Stripes',...
         'Multiple Stripes', 'Image from File'};
-    filterTypes = {'Impulse Response', 'Frequency Response'};
-    impulseResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
-    frequencyResponseTypes = {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
+    filterTypes = {'Frequency Response', 'Impulse Response', };
+    frequencyResponseTypes  = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
+    impulseResponseTypes= {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
 
 %% Construct the main window (frame)
     window = view.Frame(panel_color,'Project 2',[win_pos win_size]);   
@@ -104,7 +104,6 @@ function project2_gui_final()
     impRespDD = view.DropDown(filter_select_panel,impulseResponseTypes, [0.27 0.02 0.5 0.5], @impulseTypeDDCallback);
     set(impRespDD,'Visible','off');
     freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqTypeDDCallback);
-    set(freqRespDD,'Visible','off');    
     filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
     filter_size_label_x = view.Label(filter_config_panel, 'Size (x):', 10, [0.001 0.74 0.25 0.15]);
     filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.15]);
@@ -171,8 +170,7 @@ function project2_gui_final()
         spect_mag.MagnitudeImage(6);        
         x = spect_mag.GetResult();        
         model.CreateImage(7, x, imresize(x,img_icon));
-        view.UpdateImage(magnitude_img, model.GetImageIcon(7));
-        
+        view.UpdateImage(magnitude_img, model.GetImageIcon(7));        
         %   Phase
         spect_phase = algorithm_tools(model);     
         spect_phase.PhaseImage(6);        
@@ -192,12 +190,12 @@ function project2_gui_final()
         txt = filterTypes{get(filterDD, 'Value')};
         disp(txt)
         if(strcmp(txt,'Impulse Response') == 0)
-            set(freqRespDD,'Visible', 'off');
-            set(impRespDD,'Visible', 'on');
-            disp('Impulse response selected.')
-        else
             set(freqRespDD,'Visible', 'on');
             set(impRespDD,'Visible', 'off');
+            disp('Impulse response selected.')
+        else
+            set(freqRespDD,'Visible', 'off');
+            set(impRespDD,'Visible', 'on');
             disp('Frequency response selected.')
         end        
     end
@@ -206,6 +204,46 @@ function project2_gui_final()
     function impulseTypeDDCallback(hObj,event)
         txt = impulseResponseTypes{get(impRespDD, 'Value')};
         disp(txt)
+        switch(txt)            
+            case 'average'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_label_x,filter_size_value_x,...
+                    filter_size_label_y, filter_size_value_y]);
+            case 'disk'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);            
+            case 'gaussian'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+            case 'laplacian'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);
+            case 'log'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+            case 'motion'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_size_label_x, filter_size_value_x,filter_size_value_y]);
+            case 'sobel'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+            case 'prewitt'
+                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
+                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+            case 'unsharp'
+                view.HideWidgets([filter_size_label_x, filter_size_value_x,filter_size_value_y,filter_std_dev]);
+                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);
+            otherwise
+                disp('Invalid filter type' );
+        end  
     end
 
     % Callback function for frequency response dropdown
@@ -215,27 +253,16 @@ function project2_gui_final()
     end
 
     % Callback function for "filter" button
-    function filtCB(hObj, event)
-        % This is the convolution wrapper class
-        s = get(filter_size_value_x, 'String');
-        s2=double(str2double(s));
-        t = get(filter_size_value_y, 'String');        
-        t=double(str2double(t));
-        sd = get(filter_std_dev, 'String');
-        sd2=double(str2double(sd));
-        
-        nhood_rows = s2 ;% some example values we will put in config widgets
-        nhood_cols = t ;% some example values we will put in config widgets
-        stddev_val = sd2;
-        txt = filterTypes{get(filterDD, 'Value')};
-        
-        
-        if(strcmp(txt,'Impulse Response') == 0)
-            ctrl.DoFiltering(impulseResponseTypes{get(impRespDD, 'Value')},...
-                [nhood_rows, nhood_cols, stddev_val], filt_img5);
+    function filtCB(hObj, event)        
+        params = [double(str2double(get(filter_size_value_x,'String'))),...
+            double(str2double(get(filter_size_value_y, 'String'))),...
+            double(str2double(get(filter_std_dev, 'String')))];        
+        if(strcmp(filterTypes{get(filterDD, 'Value')},'Impulse Response')==0)
+            ctrl.DoFiltering(impulseResponseTypes{get(impRespDD,'Value')},...
+                params, filt_img5);
         else
-            ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD, 'Value')},...
-                [nhood_rows, nhood_cols, stddev_val], filt_img5);
+            ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD,'Value')},...
+                params, filt_img5);
         end
     end 
      
