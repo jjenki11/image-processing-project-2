@@ -170,7 +170,8 @@ function project2_gui_final()
         spect_mag.MagnitudeImage(6);        
         x = spect_mag.GetResult();        
         model.CreateImage(7, x, imresize(x,img_icon));
-        view.UpdateImage(magnitude_img, model.GetImageIcon(7));        
+        view.UpdateImage(magnitude_img, model.GetImageIcon(7));
+        
         %   Phase
         spect_phase = algorithm_tools(model);     
         spect_phase.PhaseImage(6);        
@@ -242,7 +243,7 @@ function project2_gui_final()
                 view.HideWidgets([filter_size_label_x, filter_size_value_x,filter_size_value_y,filter_std_dev]);
                 view.ShowWidgets([filter_size_label_x, filter_size_value_x]);
             otherwise
-                disp('Invalid filter type' );
+                disp('Invalid filter typ...e' );
         end  
     end
 
@@ -258,10 +259,10 @@ function project2_gui_final()
             double(str2double(get(filter_size_value_y, 'String'))),...
             double(str2double(get(filter_std_dev, 'String')))];        
         if(strcmp(filterTypes{get(filterDD, 'Value')},'Impulse Response')==0)
-            ctrl.DoFiltering(impulseResponseTypes{get(impRespDD,'Value')},...
+            ctrl.DoFiltering({get(frequencyResponseTypes,'Value')},...
                 params, filt_img5);
         else
-            ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD,'Value')},...
+            ctrl.DoFiltering(impulseResponseTypes{get(impRespDD,'Value')},...
                 params, filt_img5);
         end
     end 

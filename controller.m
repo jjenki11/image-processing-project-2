@@ -50,7 +50,7 @@ classdef controller < handle
         switch(fType)            
             case 'average'
                 x = obj.DoAverageFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5, obj.DoAverageFilter(params), dest);
             case 'disk'
                 x = obj.DoDiskFilter(params);
                 obj.GenerateImageIcon(5, x, dest);
