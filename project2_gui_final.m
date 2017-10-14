@@ -35,8 +35,8 @@ function project2_gui_final()
         'Multiple Circles', 'Multiple Rectangles', 'Single Stripes',...
         'Multiple Stripes', 'Image from File'};
     filterTypes = {'Impulse Response', 'Frequency Response'};
-    impulseResponseTypes = {'median', 'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
-    frequencyResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
+    impulseResponseTypes = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
+    frequencyResponseTypes = {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
 
 %% Construct the main window (frame)
     window = view.Frame(panel_color,'Project 2',[win_pos win_size]);   
@@ -71,8 +71,7 @@ function project2_gui_final()
     conv_button = view.Button(tab1,'convolve',8,[.47,.5,.07,.05],@convCB);    
     
 %% Construct the Spectrum Drawing area
-    spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.05,.05,.9,.9]);    
-    
+    spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.05,.05,.9,.9]);        
     spectrum_image_type_label = view.Label(spectrum_panel, 'Type: ', 10, [0.01, 0.91, 0.09, 0.05]);
     spectrum_imageDD = view.DropDown(spectrum_panel,spectrumImageTypes, [0.115, 0.91, 0.25, 0.05], @spectrumImageTypeDDCallback);
     % options pane
@@ -88,8 +87,7 @@ function project2_gui_final()
     % phase image
     phase_image_panel = view.Container(spectrum_panel,panel_color,'Phase',10,[1-img_size,.05,img_size,img_size]);    
     phase_img = view.ImageWindow(phase_image_panel, [0.075,0.07, .85, .85], zeros(img_icon)); 
-    draw_spect_button = view.Button(spectrum_panel,'draw spectrum',8,[.15,.05,.17,.05],@drawSpectrumCB); 
-    
+    draw_spect_button = view.Button(spectrum_panel,'draw spectrum',8,[.15,.05,.17,.05],@drawSpectrumCB);     
     
 %% Construct the Filtering area
     img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.25,img_size,img_size]);    
@@ -98,8 +96,7 @@ function project2_gui_final()
     img4_btn  = view.Button(img4_panel, 'load', 8, [.725, 0, .15, .07], @file4CB);    
     img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.25,img_size,img_size]);
     filt_img5 = view.ImageWindow(img5_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-    img5_save_btn = view.Button(img5_panel, 'Save', 8, [0.125, 0, .19, .07], @saveFilteredImage);    
-    
+    img5_save_btn = view.Button(img5_panel, 'Save', 8, [0.125, 0, .19, .07], @saveFilteredImage);        
     filter_select_panel = view.Container(tab3,panel_color,'Select', 10, [.001, .75, img_size,img_size/2]);
     ftechnique_label = view.Label(filter_select_panel, 'Technique:', 10, [0.001 0.71 0.25 0.15]);
     filterDD = view.DropDown(filter_select_panel,filterTypes, [0.27 0.71 0.5 0.15], @filterTypeDDCallback);
@@ -107,23 +104,22 @@ function project2_gui_final()
     impRespDD = view.DropDown(filter_select_panel,impulseResponseTypes, [0.27 0.02 0.5 0.5], @impulseTypeDDCallback);
     set(impRespDD,'Visible','off');
     freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqTypeDDCallback);
-    set(freqRespDD,'Visible','off');
-    
+    set(freqRespDD,'Visible','off');    
     filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
-    
-    %   This is where all of the input widgets will go    
-    %   Set up parameter inputs for all of these filter types in a new
-    %   group
-    filter_size_label_x = view.Label(filter_config_panel, 'Size (x):', 10, [0.001 0.71 0.25 0.15]);
-    filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.71 0.25 0.15]);
-    filter_size_label_y = view.Label(filter_config_panel, 'Size (y):', 10, [0.001 0.6 0.25 0.15]);
-    filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.6 0.25 0.15]);
-    
+    filter_size_label_x = view.Label(filter_config_panel, 'Size (x):', 10, [0.001 0.74 0.25 0.15]);
+    filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.15]);
+    filter_size_label_y = view.Label(filter_config_panel, 'Size (y):', 10, [0.001 0.58 0.25 0.15]);
+    filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.15]);
+    filter_sd_label = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.15]);
+    filter_std_dev = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.15]);
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);
     
 %% Construct the About area
     about_panel = view.Container(tab4,panel_color,'About this software',10,[.1,.1,.8,.8]);    
-    about_message = view.Label(about_panel, 'TBD - Future home of the about area (description of the project)!', 10, [0.2,0.5, .60, .07]);
+    about_message = view.Label(about_panel, 'TBD - Future home of the about area (description of the project)!', 10, [0.2,0.5, .60, .07]);    
+    
+    % initialize text boxes to 0
+    view.InitializeValues([filter_size_value_x,filter_size_value_y,filter_std_dev]);
     
 %% Define the callbacks for buttons etc.  
 %   TBD - create controller class which will house all callbacks 
@@ -221,24 +217,25 @@ function project2_gui_final()
     % Callback function for "filter" button
     function filtCB(hObj, event)
         % This is the convolution wrapper class
-        s = get(filter_size_value_x, 'String')
-        s=str2num(s(1));
-        t = get(filter_size_value_y, 'String')
+        s = get(filter_size_value_x, 'String');
+        s2=double(str2double(s));
+        t = get(filter_size_value_y, 'String');        
+        t=double(str2double(t));
+        sd = get(filter_std_dev, 'String');
+        sd2=double(str2double(sd));
         
-        t=str2num(t(1));
-        
-        nhood_rows = s ;% some example values we will put in config widgets
+        nhood_rows = s2 ;% some example values we will put in config widgets
         nhood_cols = t ;% some example values we will put in config widgets
-        
+        stddev_val = sd2;
         txt = filterTypes{get(filterDD, 'Value')};
         
         
         if(strcmp(txt,'Impulse Response') == 0)
             ctrl.DoFiltering(impulseResponseTypes{get(impRespDD, 'Value')},...
-                [nhood_rows, nhood_cols], filt_img5);
+                [nhood_rows, nhood_cols, stddev_val], filt_img5);
         else
             ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD, 'Value')},...
-                [nhood_rows, nhood_cols], filt_img5);
+                [nhood_rows, nhood_cols, stddev_val], filt_img5);
         end
     end 
      

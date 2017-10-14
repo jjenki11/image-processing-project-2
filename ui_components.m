@@ -50,9 +50,11 @@ classdef ui_components
       % Updates an image on the GUI by it's handle object
       function UpdateImage(obj, p, img)
           set(imhandles(p),'CData',img);
-          colormap gray;
+%           colormap gray;
+          colormap(gray(256));
+            axis('image');
           axis off
-          axis image
+%           axis image
       end
       
       % Opens a browser to find a file in your file system
@@ -96,6 +98,13 @@ classdef ui_components
       function r = DropDown(obj, p, list, pos, cb)
           r = uicontrol('Parent', p, 'Style', 'popup', 'String', list,...
                         'Units','normalized','Position', pos, 'Callback', cb);
+      end      
+      % value initializer
+      function InitializeValues(obj, vArray)
+         n=max(size(vArray));
+         for i=1:n
+            set(vArray(i), 'String', 0); 
+         end         
       end
       
    end

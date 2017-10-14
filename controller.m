@@ -48,28 +48,35 @@ classdef controller < handle
       function obj = DoFiltering(obj, fType, params, dest)
         % we check the filter type to choose correct controller call 
         switch(fType)            
-            case 'median'
-                x = obj.DoMedianFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
             case 'average'
                 x = obj.DoAverageFilter(params);
                 obj.GenerateImageIcon(5, x, dest);
             case 'disk'
-                disp('TBD - implement disk filter')
+                x = obj.DoDiskFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'gaussian'
-                disp('TBD - implement gaussian filter')
+                x = obj.DoGaussianFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'laplacian'
-                disp('TBD - implement laplacian filter')
+                x = obj.DoLaplacianFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'log'
-                disp('TBD - implement log filter')
+                x = obj.DoLogFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'motion'
-                disp('TBD - implement motion filter')
+                x = obj.DoMotionFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'sobel'
-                disp('TBD - implement sobel filter')
+                x = obj.DoSobelFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'prewitt'
-                disp('TBD - implement prewitt filter')
+                x = obj.DoPrewittFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
             case 'unsharp'
-                disp('TBD - implement unsharp filter')
+                x = obj.DoUnsharpFilter(params);
+                obj.GenerateImageIcon(5, x, dest);
+                
+            %   still need to implement the frequency filters!
             case 'lowpass'
                 disp('TBD - implement lowpass filter')
             case 'highpass'
@@ -83,20 +90,61 @@ classdef controller < handle
             otherwise
                 disp('Invalid filter type' );
         end        
-%         if(x)  end
-      end
-      
-      function r = DoMedianFilter(obj, params)      
-        med_filter = algorithm_tools(obj.GetModel());     
-        med_filter.MedianFilter(4,[params(1), params(2)]);        
-        r = med_filter.GetResult();          
       end
       
        function r = DoAverageFilter(obj, params)      
-        med_filter = algorithm_tools(obj.GetModel());     
-        med_filter.AverageFilter(4,params(1));        
-        r = med_filter.GetResult();          
-      end
+        avg_filter = algorithm_tools(obj.GetModel());     
+        avg_filter.AverageFilter(4,params);        
+        r = avg_filter.GetResult();          
+       end
+      
+       function r = DoDiskFilter(obj, params)      
+        disk_filter = algorithm_tools(obj.GetModel());     
+        disk_filter.DiskFilter(4,params);        
+        r = disk_filter.GetResult();          
+       end
+       
+       function r = DoMotionFilter(obj, params)      
+        motion_filter = algorithm_tools(obj.GetModel());     
+        motion_filter.MotionFilter(4,params);        
+        r = motion_filter.GetResult();          
+       end
+       
+       function r = DoLaplacianFilter(obj, params)      
+        laplacian_filter = algorithm_tools(obj.GetModel());     
+        laplacian_filter.LaplacianFilter(4,params);        
+        r = laplacian_filter.GetResult();          
+       end
+       
+       function r = DoSobelFilter(obj, params)      
+        sobel_filter = algorithm_tools(obj.GetModel());     
+        sobel_filter.SobelFilter(4,params);        
+        r = sobel_filter.GetResult();          
+       end
+       
+       function r = DoGaussianFilter(obj, params)      
+        gaussian_filter = algorithm_tools(obj.GetModel());     
+        gaussian_filter.GaussianFilter(4,params);        
+        r = gaussian_filter.GetResult();          
+       end
+       
+       function r = DoLogFilter(obj, params)      
+        log_filter = algorithm_tools(obj.GetModel());     
+        log_filter.LogFilter(4,params);        
+        r = log_filter.GetResult();          
+       end
+       
+       function r = DoPrewittFilter(obj, params)      
+        prewitt_filter = algorithm_tools(obj.GetModel());     
+        prewitt_filter.PrewittFilter(4,params);        
+        r = prewitt_filter.GetResult();          
+       end
+       
+       function r = DoUnsharpFilter(obj, params)      
+        unsharp_filter = algorithm_tools(obj.GetModel());     
+        unsharp_filter.UnsharpFilter(4,params);        
+        r = unsharp_filter.GetResult();          
+       end
       
       function obj = GenerateImageIcon(obj, idx, data, dest)
         obj.GetModel().CreateImage(idx, data, imresize(data,obj.img_icon));
