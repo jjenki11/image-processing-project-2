@@ -36,6 +36,7 @@ function project2_gui_final()
         'Multiple Stripes', 'Image from File'};
     filterTypes = {'Frequency Response', 'Impulse Response', };
     frequencyResponseTypes  = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
+    frequencyVarietyTypes = {'ideal', 'gaussian', 'butterworth'};
     impulseResponseTypes= {'average', 'disk','gaussian','laplacian','log','motion','prewitt','sobel','unsharp'};
 
 %% Construct the main window (frame)
@@ -102,12 +103,15 @@ function project2_gui_final()
     filterDD = view.DropDown(filter_select_panel,filterTypes, [0.27 0.71 0.5 0.15], @filterTypeDDCallback);
     ftype_label = view.Label(filter_select_panel, 'Type:', 10, [0.001 0.35 0.25 0.15]);
     impRespDD = view.DropDown(filter_select_panel,impulseResponseTypes, [0.27 0.02 0.5 0.5], @impulseTypeDDCallback);
+    fvariety_label = view.Label(filter_select_panel, 'Variety:', 10, [0.001 0.1 0.25 0.15]);
+    freqVarietyDD = view.DropDown(filter_select_panel,frequencyVarietyTypes, [0.27 0.02 0.5 0.25], @freqVarietyTypeDDCallback);
+    
     set(impRespDD,'Visible','off');
     freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqTypeDDCallback);
     filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
-    filter_size_label_x = view.Label(filter_config_panel, 'Size (x):', 10, [0.001 0.74 0.25 0.15]);
+    filter_size_label_x = view.Label(filter_config_panel, 'Cutoff Freq:', 10, [0.001 0.74 0.25 0.15]);
     filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.15]);
-    filter_size_label_y = view.Label(filter_config_panel, 'Size (y):', 10, [0.001 0.58 0.25 0.15]);
+    filter_size_label_y = view.Label(filter_config_panel, 'Order(n)::', 10, [0.001 0.58 0.25 0.15]);
     filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.15]);
     filter_sd_label = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.15]);
     filter_std_dev = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.15]);
@@ -171,7 +175,6 @@ function project2_gui_final()
         x = spect_mag.GetResult();        
         model.CreateImage(7, x, imresize(x,img_icon));
         view.UpdateImage(magnitude_img, model.GetImageIcon(7));
-        
         %   Phase
         spect_phase = algorithm_tools(model);     
         spect_phase.PhaseImage(6);        
@@ -191,20 +194,34 @@ function project2_gui_final()
         txt = filterTypes{get(filterDD, 'Value')};
         disp(txt)
         if(strcmp(txt,'Impulse Response') == 0)
+            set(filter_size_label_x, 'String', 'Cutoff Freq:');
+            set(filter_size_label_x, 'String', 'Order(n):');
             set(freqRespDD,'Visible', 'on');
+            set(freqVarietyDD, 'Visible', 'on');
+            set(fvariety_label, 'Visible', 'on');
             set(impRespDD,'Visible', 'off');
             disp('Impulse response selected.')
         else
+            set(filter_size_label_x, 'String', 'Size(x):');
+            set(filter_size_label_x, 'String', 'Size(y):');
             set(freqRespDD,'Visible', 'off');
+             set(freqVarietyDD, 'Visible', 'off');
+             set(fvariety_label, 'Visible', 'off');
             set(impRespDD,'Visible', 'on');
             disp('Frequency response selected.')
         end        
+    end
+
+    function freqVarietyTypeDDCallback(hObj, event)
+        txt = frequencyVarietyTypes{get(freqVarietyDD, 'Value')};
+        disp(txt)        
     end
 
     % Callback function for impulse response dropdown
     function impulseTypeDDCallback(hObj,event)
         txt = impulseResponseTypes{get(impRespDD, 'Value')};
         disp(txt)
+        
         switch(txt)            
             case 'average'
                 view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
@@ -251,19 +268,21 @@ function project2_gui_final()
     function freqTypeDDCallback(hObj, event)
         txt = frequencyResponseTypes{get(freqRespDD, 'Value')};
         disp(txt)
+        
     end
 
     % Callback function for "filter" button
     function filtCB(hObj, event)        
         params = [double(str2double(get(filter_size_value_x,'String'))),...
             double(str2double(get(filter_size_value_y, 'String'))),...
-            double(str2double(get(filter_std_dev, 'String')))];        
+            double(str2double(get(filter_std_dev, 'String')))];     
+        
         if(strcmp(filterTypes{get(filterDD, 'Value')},'Impulse Response')==0)
-            ctrl.DoFiltering({get(frequencyResponseTypes,'Value')},...
-                params, filt_img5);
+            ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD,'Value')},...
+                params, filt_img5, frequencyVarietyTypes{get(freqVarietyDD, 'Value')},filt_img4);
         else
             ctrl.DoFiltering(impulseResponseTypes{get(impRespDD,'Value')},...
-                params, filt_img5);
+                params, filt_img5, 0,4);
         end
     end 
      

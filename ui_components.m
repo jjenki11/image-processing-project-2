@@ -28,7 +28,9 @@ classdef ui_components
           r = axes('Parent', p,...
                      'Units', 'normalized',...
                      'Position', pos);
-          imagesc(img); colormap gray;
+          [sy,sx,sz]=size(img);
+          x=[1:sx];y=[1:sy];
+          image(x,y,img); %xolormap gray;
           axis off
           axis image          
       end
@@ -48,14 +50,118 @@ classdef ui_components
       end
       
       % Updates an image on the GUI by it's handle object
-      function UpdateImage(obj, p, img)
-          set(imhandles(p),'CData',img);
-%           colormap gray;
-          colormap(gray(256));
-            axis('image');
-          axis off
+      function UpdateImage(obj, p, in,binary_flag)
+          
+in = double(in);
+
+% Get size info
+[ sy, sx, sz ] = size( in );
+
+% Is the logical (binary) pixel data?
+if islogical(in) || (min(in(:))==0 && max(in(:))==1)
+    binary_flag = 1;
+else
+    binary_flag = 0;
+end
+
+% Set up the default axes
+% if nargin < 6 || isempty(x) || isempty(y)
+    x=[1:sx]; % default
+    y=[1:sy]; % default
+% end
+
+nstd=3;
+
+% number of pixels to use for statistics (mean and std)
+max_num = min( [ 10000, sy*sx ] );
+
+if binary_flag == 1
+
+    % Treat by scaling 0 -> 0 and 1->255
+
+    out = in(:,:,1)*255;
+    gain = 255;
+    bias = 0;
+%     image(x,y,out);
+%     colormap(gray(256));
+%     axis('image');
+
+else
+
+    % Treat by mapping nstd standard deviations
+    % of input range into display range
+
+    if nargin < 4 
+        nstd = 2; % default
+    end
+
+    if sz == 3 % color data
+
+        R = in(:,:,1);
+        G = in(:,:,2);
+        B = in(:,:,3);
+
+
+
+            USE = round( linspace(1,sy*sx,max_num ) );
+            
+            mR = mean(R(USE));
+            mG = mean(G(USE));
+            mB = mean(B(USE));
+
+            sR = std(R(USE));
+            sG = std(G(USE));
+            sB = std(B(USE));
+
+        
+
+        gain(1) = 128/(sR*nstd);
+        gain(2) = 128/(sG*nstd);
+        gain(3) = 128/(sB*nstd);
+
+        bias(1) = 128-(mR*128)/(sR*nstd);
+        bias(2) = 128-(mG*128)/(sG*nstd);
+        bias(3) = 128-(mB*128)/(sB*nstd);
+
+        R = in(:,:,1)*gain(1)+bias(1);
+        G = in(:,:,2)*gain(2)+bias(2);
+        B = in(:,:,3)*gain(3)+bias(3);
+
+        out(:,:,1)=uint8(clip(round(R),0,255));
+        out(:,:,2)=uint8(clip(round(G),0,255));
+        out(:,:,3)=uint8(clip(round(B),0,255));
+
+%         image(x,y,out);
+%         axis('image');
+
+    else % assume grayscale (use first band only)
+
+        in = in(:,:,1);
+
+
+
+            USE = round( linspace(1,sy*sx,max_num ) );
+            
+            inmn=mean(in(USE));
+            instd=std(in(USE));
+
+
+        gain = 128/(instd*nstd);
+        bias = 128-(inmn*128)/(instd*nstd);
+        out=in*gain+bias;
+%         image(x,y,out);
+%         colormap(gray(256));
+%         axis('image');
+
+    end
+    
+        set(imhandles(p),'CData',out);
+        colormap(gray(256));
+        axis('image');
+%         axis off
 %           axis image
-      end
+    end
+  end
       
       % Opens a browser to find a file in your file system
       function r = FileBrowser(obj, p, pos, tbox)

@@ -45,7 +45,7 @@ classdef controller < handle
         obj.GenerateImageIcon(3, x, slot);
       end
       
-      function obj = DoFiltering(obj, fType, params, dest)
+      function obj = DoFiltering(obj, fType, params, dest, variety,dest2)
         % we check the filter type to choose correct controller call 
         switch(fType)            
             case 'average'
@@ -78,15 +78,112 @@ classdef controller < handle
                 
             %   still need to implement the frequency filters!
             case 'lowpass'
-                disp('TBD - implement lowpass filter')
+                switch(variety)
+                    case 'ideal'
+                        x = obj.DoLowpassIdealFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);                        
+                    case 'gaussian'
+                        x = obj.DoLowpassGaussianFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    case 'butterworth'
+                        x = obj.DoLowpassButterworthFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    otherwise
+                        disp('bad filter type')
+                end       
             case 'highpass'
-                disp('TBD - implement highpass filter')
+                switch(variety)
+                    case 'ideal'
+                        x = obj.DoHighpassIdealFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);                        
+                    case 'gaussian'
+                        x = obj.DoHighpassGaussianFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    case 'butterworth'
+                        disp('i am doing the right hpbutterworth call...')
+                        x = obj.DoHighpassButterworthFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    otherwise
+                        disp('bad filter type')
+                end       
+
             case 'bandpass'
-                disp('TBD - implement bandpass filter')
+                switch(variety)
+                    case 'ideal'
+                        x = obj.DoBandpassIdealFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);                        
+                    case 'gaussian'
+                        x = obj.DoBandpassGaussianFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    case 'butterworth'
+                        x = obj.DoBandpassButterworth(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    otherwise
+                        disp('bad filter type')
+                end       
             case 'bandreject'
-                disp('TBD - implement bandreject filter')
+                switch(variety)
+                    case 'ideal'
+                        x = obj.DoBandrejectIdealFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);                        
+                    case 'gaussian'
+                        x = obj.DoBandrejectGaussianFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    case 'butterworth'
+                        x = obj.DoBandrejectButterworthFilter(params);
+                        obj.GenerateImageIcon(5, x, dest);
+                    otherwise
+                        disp('bad filter type')
+                end   
+                
             case 'notch reject'
-                disp('TBD - implement notch reject filter')
+            % kept this in here since we want to observe this window as a 
+            % literal controller
+                button=0;
+                xi = obj.DoNotchFilterInit(4);
+                X=fft2(double(xi));
+                [N,M]=size(xi);
+                midu = (fix(M/2)+1);
+                midv = (fix(N/2)+1);
+                X2 = X;
+                button = 0;
+                % filter half width and height
+                half_width = 7;
+                half_height = 7;
+                H = ones( N, M );                
+                disp('Left Mouse to selected notch frequency, right to exit')
+                while button~=3
+                    f2 = figure(888);
+                    im(abs(fftshift(X2)), 0, 0, 3 );
+                    title('Image Magnitude Spectrum');
+                    [x0,y0,button] = ginput(1);
+                    x0 = round(x0);
+                    y0 = round(y0);
+                    %make sure the selected points are at least 
+                    % at a distance more than half the width and height of the filter 
+                    x0( x0 < half_width+2 ) = half_width + 2;
+                    x0( x0 > M - half_width ) = M - half_width;
+                    y0( y0 < half_height+2 ) = half_height + 2;
+                    y0( y0 > N - half_height ) = N - half_height;
+                    % starting and end point of the notch filter in x and y
+                    stx = x0-half_width;
+                    edx = x0+half_width;
+                    sty = y0-half_height;
+                    edy = y0+half_height;
+                    % starting and end point of the notch filter conjugate point in x and y
+                    stx2 = 2*midu - edx;
+                    edx2 = 2*midu - stx;
+                    sty2 = 2*midv - edy;
+                    edy2 = 2*midv - sty;
+                    % apply the notch filter
+                    H(sty:edy,stx:edx) = 0;
+                    H(sty2:edy2,stx2:edx2) = 0;
+                    X2 = X2.*ifftshift(H);
+                    x2 = ifft2(X2);  
+                    obj.GenerateImageIcon(5, x2, dest);
+                end
+                obj.GenerateImageIcon(5, x2, dest);
+                close(f2);
             otherwise
                 disp('Invalid filter type' );
         end        
@@ -145,10 +242,87 @@ classdef controller < handle
         unsharp_filter.UnsharpFilter(4,params);        
         r = unsharp_filter.GetResult();          
        end
-      
+       
+       %    high pass filters       
+       function r = DoHighpassIdealFilter(obj, params)
+        hpideal_filter = algorithm_tools(obj.GetModel());
+        hpideal_filter.HPFIdeal(4, params);
+        r = hpideal_filter.GetResult();
+       end
+       function r = DoHighpassGaussianFilter(obj, params)
+        hpgauss_filter = algorithm_tools(obj.GetModel());
+        hpgauss_filter.HPFGaussian(4, params);
+        r = hpgauss_filter.GetResult();
+       end       
+       function r = DoHighpassButterworthFilter(obj, params)
+        hpbutter_filter = algorithm_tools(obj.GetModel());
+        hpbutter_filter.HPFButterworth(4, params);
+        r = hpbutter_filter.GetResult();
+       end
+       
+      %    low pass filters       
+       function r = DoLowpassIdealFilter(obj, params)
+        lpideal_filter = algorithm_tools(obj.GetModel());
+        lpideal_filter.LPFIdeal(4, params);
+        r = lpideal_filter.GetResult();
+       end
+       function r = DoLowpassGaussianFilter(obj, params)
+        lpgauss_filter = algorithm_tools(obj.GetModel());
+        lpgauss_filter.LPFGaussian(4, params);
+        r = lpgauss_filter.GetResult();
+       end       
+       function r = DoLowpassButterworthFilter(obj, params)
+        lpbutter_filter = algorithm_tools(obj.GetModel());
+        lpbutter_filter.LPFButterworth(4, params);
+        r = lpbutter_filter.GetResult();
+       end
+       
+       function r = DoBandpassIdealFilter(obj, params)
+        bpideal_filter = algorithm_tools(obj.GetModel());
+        bpideal_filter.BandpassIdeal(4, params);
+        r = bpideal_filter.GetResult();
+       end
+       
+       function r = DoBandpassGaussianFilter(obj, params)
+        bpbutter_filter = algorithm_tools(obj.GetModel());
+        bpbutter_filter.BandpassGaussian(4, params);
+        r = bpbutter_filter.GetResult();
+       end
+       
+       function r = DoBandpassButterworth(obj, params)
+        bpbutter_filter = algorithm_tools(obj.GetModel());
+        bpbutter_filter.BandpassButterworth(4, params);
+        r = bpbutter_filter.GetResult();
+       end
+       
+       
+       function r = DoBandrejectIdealFilter(obj, params)
+        brideal_filter = algorithm_tools(obj.GetModel());
+        brideal_filter.BandrejectIdeal(4, params);
+        r = brideal_filter.GetResult();
+       end
+       
+       function r = DoBandrejectGaussianFilter(obj, params)
+        brgauss_filter = algorithm_tools(obj.GetModel());
+        brgauss_filter.BandrejectGaussian(4, params);
+        r = brgauss_filter.GetResult();
+       end
+       
+       function r = DoBandrejectButterworthFilter(obj, params)
+        brbutter_filter = algorithm_tools(obj.GetModel());
+        brbutter_filter.BandrejectButterworth(4, params);
+        r = brbutter_filter.GetResult();
+       end
+       
+       function r = DoNotchFilterInit(obj, idx)
+           nr_filter = algorithm_tools(obj.GetModel());
+           nr_filter.NotchFilterInit(idx);
+           r = nr_filter.GetResult();
+       end
+       
       function obj = GenerateImageIcon(obj, idx, data, dest)
         obj.GetModel().CreateImage(idx, data, imresize(data,obj.img_icon));
-        obj.GetView().UpdateImage(dest, obj.GetModel().GetImageIcon(idx)); 
+        obj.GetView().UpdateImage(dest, obj.GetModel().GetImageIcon(idx),1); 
       end
       
       function obj = SetModel(obj,m)
