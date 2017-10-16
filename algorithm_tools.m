@@ -15,32 +15,39 @@ classdef algorithm_tools < handle
       function obj = ConvolveImages(obj, idx1, idx2)
         i1 = obj.GetModel().GetImageData(idx1);
         i2 = obj.GetModel().GetImageData(idx2);
-        cr = conv2(double(i1),double(i2),'same'); % TBD make this proper
-        obj.SetResult(cr);
+        [sx1,sy1]=size(i1);
+        [sx2,sy2]=size(i2);
+        pad = min([sx1,sy1,sx2,sy2]);
+        xp=softpad(i1,pad,pad,pad,pad); 
+        cr = conv2(double(xp),double(i2),'valid'); % TBD make this proper
+        obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad));
       end        
       
       function obj = DiskFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('disk',params(1));
-        xp=softpad(i1, params(1),params(1),params(1),params(1));
+        pad=max(params(1));
+        xp=softpad(i1,pad,pad,pad,pad); 
         cr=conv2(double(xp), h, 'valid');
-        obj.SetResult(cr);
+        obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad));
       end
       
       function obj = AverageFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h = fspecial('average',[params(1), params(2)]);
-        xp=softpad(i1, max(params),max(params),max(params),max(params)); 
+        pad=max(params(1:2));
+        xp=softpad(i1,pad,pad,pad,pad); 
         cr = conv2(double(xp),h,'valid');
-        obj.SetResult(cr);
+        obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad));
       end
       
       function obj = MotionFilter(obj, idx, params)
           i1 = obj.GetModel().GetImageData(idx);
           h = fspecial('motion', params(1), params(2));
-          xp=softpad(i1, max(params(1:2)),max(params(1:2)),max(params(1:2)),max(params(1:2)));
+          pad=max(params(1:2));
+          xp=softpad(i1,pad,pad,pad,pad); 
           cr = conv2(double(xp), double(h),'valid');
-          obj.SetResult(cr);
+          obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad));
       end
       
       function obj = SobelFilter(obj, idx, params)
@@ -53,8 +60,7 @@ classdef algorithm_tools < handle
       function obj = LaplacianFilter(obj, idx, params)
           i1 = obj.GetModel().GetImageData(idx);
           h=fspecial('laplacian',params(1));
-          xp=softpad(i1, 10,10,10,10);
-          cr=conv2((xp),(h),'valid');
+          cr=conv2((i1),(h),'valid');
           obj.SetResult(cr);  
       end
       
@@ -65,17 +71,19 @@ classdef algorithm_tools < handle
         hx2=repmat(hx,[params(2),1]); 
         hy2=repmat(hy,[1,params(1)]);
         h=hx2.*hy2;
-        xp=softpad(i1, max(params(1:2)),max(params(1:2)),max(params(1:2)),max(params(1:2)));
+        pad=max(params(1:2));
+        xp=softpad(i1,pad,pad,pad,pad);
         cr=conv2(double(xp), h, 'valid'); 
-        obj.SetResult(cr);  
+        obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad));  
       end
       
       function obj = LogFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('log',[params(1) params(2)],params(3));
-        xp=softpad(i1, max(params(1:2)),max(params(1:2)),max(params(1:2)),max(params(1:2)));
+        pad=max(params(1:2));
+        xp=softpad(i1,pad,pad,pad,pad);
         cr=conv2(double(xp), h, 'valid');
-        obj.SetResult(cr); 
+        obj.SetResult(cr(pad+1:end-pad,pad+1:end-pad)); 
       end
       
       function obj = PrewittFilter(obj, idx, params)
@@ -245,10 +253,10 @@ classdef algorithm_tools < handle
         f1 = ( [1:M] - (floor(M/2)+1) )/M;
         f2 = ( [1:N] - (floor(N/2)+1) )/N;
         [F1,F2]=meshgrid(f1,f2); 
-        D0=.12; %cutoff frequency
+        D0=params(1); %cutoff frequency
         D=sqrt(F1.^2+F2.^2);        
         D(D==0)=eps; % prevent divide by zero
-        W = .05; % width of band
+        W = params(2); % width of band
         dw = D*W;
         dw(dw==0)=eps;
         numer = D.^2.-D0.^2;
@@ -271,11 +279,11 @@ classdef algorithm_tools < handle
         f1 = ( [1:M] - (floor(M/2)+1) )/M;
         f2 = ( [1:N] - (floor(N/2)+1) )/N;
         [F1,F2]=meshgrid(f1,f2); 
-        D0=.12; %cutoff frequency
+        D0=params(1); %cutoff frequency
         D=sqrt(F1.^2+F2.^2);        
         D(D==0)=eps; % prevent divide by zero
-        W = .05; % width of band
-        n = 5;
+        W = params(2); % width of band
+        n = params(3);
         dw = D*W;
         dw(dw==0)=eps;
         denom = D.^2.-D0.^2;
@@ -323,10 +331,10 @@ classdef algorithm_tools < handle
         f1 = ( [1:M] - (floor(M/2)+1) )/M;
         f2 = ( [1:N] - (floor(N/2)+1) )/N;
         [F1,F2]=meshgrid(f1,f2); 
-        D0=.12; %cutoff frequency
+        D0=params(1); %cutoff frequency
         D=sqrt(F1.^2+F2.^2);        
         D(D==0)=eps; % prevent divide by zero
-        W = .05; % width of band
+        W = params(2); % width of band
         dw = D*W;
         dw(dw==0)=eps;
         numer = D.^2.-D0.^2;
@@ -349,11 +357,11 @@ classdef algorithm_tools < handle
         f1 = ( [1:M] - (floor(M/2)+1) )/M;
         f2 = ( [1:N] - (floor(N/2)+1) )/N;
         [F1,F2]=meshgrid(f1,f2); 
-        D0=.12; %cutoff frequency
+        D0=params(1); %cutoff frequency
         D=sqrt(F1.^2+F2.^2);        
         D(D==0)=eps; % prevent divide by zero
-        W = .05; % width of band
-        n = 5;
+        W = params(2); % width of band
+        n = params(3);
         dw = D*W;
         dw(dw==0)=eps;
         denom = D.^2.-D0.^2;
@@ -393,9 +401,54 @@ classdef algorithm_tools < handle
       end
       
       
+      % shape generator
+      function obj = Sinusoid(obj, params)
+        s_img = mysinusoid(250, 250, params(1), params(2));        
+        obj.SetResult((s_img));
+      end
       
+      function obj = SingleCircle(obj, params)
+        s_img = mycirc(250, 250, params(1)).*255;        
+        obj.SetResult((s_img));
+      end
       
+      function obj = SingleRectangle(obj, params)
+        s_img = myrect(250, 250, params(1), params(2)).*255;        
+        obj.SetResult((s_img));
+      end
       
+      function obj = MultipleCircles(obj, params)
+        c_grid = mycomb(1000, 1000, params(2), params(3)).*255;
+        s_img = mycirc(params(1)*2, params(1)*2, params(1)).*255;        
+        c_res = conv2(c_grid, s_img, 'valid');
+        obj.SetResult((c_res));
+      end
+      
+      function obj = MultipleRectangles(obj, params)
+        c_grid = mycomb(1000, 1000, params(3), params(4));
+        bigger_dim = max(params(1:2));
+        s_img = myrect(bigger_dim*2, bigger_dim*2, params(1), params(2));        
+        c_res = conv2(c_grid, s_img, 'valid');
+        obj.SetResult((c_res));
+      end
+      
+      function obj = SingleStripe(obj, params)
+        if((params(1) == 90) || (params(1) == 270))
+            s_img = ~(mysinusoid(250, 250, 1, 0)>.25).*255;
+        else
+            s_img = (mysinusoid(250,250, 0, 1)>.25).*255;
+        end
+        obj.SetResult((s_img));
+      end
+      
+      function obj = MultipleStripes(obj, params)
+        if((params(2) == 90) || (params(2) == 270))
+            s_img = ~(mysinusoid(250, 250, params(1), 0)>.25).*255;
+        else
+            s_img = (mysinusoid(250,250, 0, params(1))>.25).*255;
+        end
+        obj.SetResult((s_img));
+      end
       
       % gets the model
       function r = GetModel(obj)

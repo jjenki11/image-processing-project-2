@@ -45,6 +45,56 @@ classdef controller < handle
         obj.GenerateImageIcon(3, x, slot);
       end
       
+      function obj = DoSinusoid(obj, params, dest)          
+%          s_img = obj.GenerateSinusoid(6, params);
+        sin_shape= algorithm_tools(obj.GetModel());
+               sin_shape.Sinusoid(params);
+               x=sin_shape.GetResult();
+         obj.GenerateImageIcon(6, x, dest);          
+      end
+      
+      function obj = DoSingleCircle(obj, params, dest)          
+        circ_shape= algorithm_tools(obj.GetModel());
+        circ_shape.SingleCircle(params);
+        x=circ_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);          
+      end
+      
+      function obj = DoSingleRectangle(obj, params, dest)          
+        rect_shape= algorithm_tools(obj.GetModel());
+        rect_shape.SingleRectangle(params);
+        x=rect_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);          
+      end
+      
+      function obj = DoMultipleCircles(obj, params, dest)          
+        circ_shape= algorithm_tools(obj.GetModel());
+        circ_shape.MultipleCircles(params);
+        x=circ_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);          
+      end
+      
+      function obj = DoMultipleRectangles(obj, params, dest)          
+        rect_shape= algorithm_tools(obj.GetModel());
+        rect_shape.MultipleRectangles(params);
+        x=rect_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);          
+      end
+      
+      function obj = DoSingleStripe(obj, params, dest) 
+        stripe_shape= algorithm_tools(obj.GetModel());
+        stripe_shape.SingleStripe(params);
+        x=stripe_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);     
+      end
+      
+      function obj = DoMultipleStripes(obj, params, dest) 
+        stripe_shape= algorithm_tools(obj.GetModel());
+        stripe_shape.MultipleStripes(params);
+        x=stripe_shape.GetResult();
+        obj.GenerateImageIcon(6, x, dest);     
+      end
+      
       function obj = DoFiltering(obj, fType, params, dest, variety,dest2)
         % we check the filter type to choose correct controller call 
         switch(fType)            
@@ -319,6 +369,15 @@ classdef controller < handle
            nr_filter.NotchFilterInit(idx);
            r = nr_filter.GetResult();
        end
+       
+       
+       function r = GenerateSinusoid(obj, idx, params, dest)
+        sin_shape = algorithm_tools(obj.GetModel());
+        sin_shape.Sinusoid(params);
+        r = sin_shape.GetResult();           
+       end
+       
+       
        
       function obj = GenerateImageIcon(obj, idx, data, dest)
         obj.GetModel().CreateImage(idx, data, imresize(data,obj.img_icon));

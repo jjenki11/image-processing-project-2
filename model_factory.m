@@ -2,7 +2,10 @@ classdef model_factory  < handle
    properties
         ImageIcon
         ImageData
+        ShapeIcon
+        ShapeData
         Images = struct
+        Shapes = struct
    end
    methods       
       % constructor for our 'image data model' 
@@ -13,7 +16,8 @@ classdef model_factory  < handle
       function obj = CreateImage(obj, idx, data, icon)
         obj.SetImageData(idx, data);
         obj.SetImageIcon(idx, icon);
-      end          
+      end     
+
       % sets the actual image data
       function obj = SetImageData(obj, idx, d)
           obj.Images(idx).ImageData = d;
@@ -30,5 +34,21 @@ classdef model_factory  < handle
       function r = GetImageIcon(obj, idx)
           r = obj.Images(idx).ImageIcon;
       end
+      
+      function obj = SetShapeData(obj, idx, d)
+          obj.Shapes(idx).ImageData = d;
+      end      
+      % sets the thumbnail image
+      function obj = SetShapeIcon(obj, idx, ic)
+          obj.Shapes(idx).ShapeIcon = ic;
+      end      
+      % gets the actual image data
+      function r = GetShapeData(obj, idx)
+          r = obj.Shapes(idx).ShapeData;
+      end
+      % gets the thumbnail image
+      function r = GetShapeIcon(obj, idx)
+          r = obj.Shapes(idx).ShapeIcon;
+      end     
    end
 end

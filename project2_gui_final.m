@@ -75,13 +75,101 @@ function project2_gui_final()
     spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.05,.05,.9,.9]);        
     spectrum_image_type_label = view.Label(spectrum_panel, 'Type: ', 10, [0.01, 0.91, 0.09, 0.05]);
     spectrum_imageDD = view.DropDown(spectrum_panel,spectrumImageTypes, [0.115, 0.91, 0.25, 0.05], @spectrumImageTypeDDCallback);
-    % options pane
-    spectrum_image_options_panel = view.Container(spectrum_panel,panel_color,'Options',10,[0.001,.62,.45,.25]);    
-    spectrum_image_panel = view.Container(spectrum_panel,panel_color,'Image',10,[img_offset,.15,img_size,img_size]);   
+    % options panels
+    spectrum_image_panel = view.Container(spectrum_panel,panel_color,'Image',10,[img_offset,.15,img_size,img_size]); 
+    spectrum_image_options_panel = view.Container(spectrum_panel,panel_color,'Options',10,[0.001,.62,.45,.25]);   
+    
+    % sinusoid opts
+    spect_sin_label_u = view.Label(spectrum_image_options_panel, 'U Freq:', 10, [0.001 0.74 0.25 0.15]);
+    spect_sin_value_u = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);    
+    spect_sin_label_v = view.Label(spectrum_image_options_panel, 'V Freq:', 10, [0.001 0.54 0.25 0.15]);
+    spect_sin_value_v = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.15]);    
+    
+    all_spect_widgets= [];
+    
+    sinusoid_widgets = [spect_sin_label_u,spect_sin_value_u,spect_sin_label_v,spect_sin_value_v];
+    all_spect_widgets=[all_spect_widgets; sinusoid_widgets];
+    
+    % single circle opts
+    spect_one_circle_label_r = view.Label(spectrum_image_options_panel, 'Radius:', 10, [0.001 0.74 0.25 0.15]);
+    spect_one_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    
+    single_circle_widgets = [spect_one_circle_label_r,spect_one_circle_value_r];
+    all_spect_widgets=[all_spect_widgets, single_circle_widgets];
+    
+    % single rectangle opts
+    spect_one_rect_label_w = view.Label(spectrum_image_options_panel, 'Width:', 10, [0.001 0.74 0.25 0.15]);
+    spect_one_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    
+    spect_one_rect_label_h = view.Label(spectrum_image_options_panel, 'Height:', 10, [0.001 0.54 0.25 0.15]);
+    spect_one_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.15]);
+    
+    single_rectangle_widgets = [spect_one_rect_label_w,spect_one_rect_value_w,spect_one_rect_label_h,spect_one_rect_value_h];
+    all_spect_widgets=[all_spect_widgets, single_rectangle_widgets];
+    
+    % multiple circles opts
+    spect_multi_rect_label_w = view.Label(spectrum_image_options_panel, 'Width:', 10, [0.001 0.74 0.25 0.15]);
+    spect_multi_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    
+    spect_multi_rect_label_h = view.Label(spectrum_image_options_panel, 'Height:', 10, [0.001 0.54 0.25 0.15]);
+    spect_multi_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.15]);
+    
+    spect_multi_rect_label_x = view.Label(spectrum_image_options_panel, 'Period(x):', 10, [0.001 0.34 0.25 0.15]);
+    spect_multi_rect_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.15]);
+    
+    spect_multi_rect_label_y = view.Label(spectrum_image_options_panel, 'Period(y):', 10, [0.001 0.14 0.25 0.15]);
+    spect_multi_rect_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.14 0.25 0.15]);
+    
+    multiple_rectangles_widgets = [spect_multi_rect_label_w,spect_multi_rect_value_w,spect_multi_rect_label_h,spect_multi_rect_value_h,...
+        spect_multi_rect_label_x,spect_multi_rect_value_x,spect_multi_rect_label_y,spect_multi_rect_value_y];
+    all_spect_widgets=[all_spect_widgets, multiple_rectangles_widgets];
+    
+    % multiple circles opts
+    spect_multi_circle_label_r = view.Label(spectrum_image_options_panel, 'Radius:', 10, [0.001 0.74 0.25 0.15]);
+    spect_multi_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    
+    spect_multi_circle_label_x = view.Label(spectrum_image_options_panel, 'Period(x):', 10, [0.001 0.54 0.25 0.15]);
+    spect_multi_circle_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.15]);
+    
+    spect_multi_circle_label_y = view.Label(spectrum_image_options_panel, 'Period(y):', 10, [0.001 0.34 0.25 0.15]);
+    spect_multi_circle_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.15]);
+    
+    multiple_circles_widgets = [spect_multi_circle_label_r,spect_multi_circle_value_r,spect_multi_circle_label_x,...
+        spect_multi_circle_value_x,spect_multi_circle_label_y,spect_multi_circle_value_y];
+    
+    all_spect_widgets=[all_spect_widgets, multiple_circles_widgets];
+    
+    % single stripes opts
+    single_stripe_label_dir = view.Label(spectrum_image_options_panel, 'Rotation:', 10, [0.001 0.74 0.25 0.15]);
+    single_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    single_stripe_widgets = [single_stripe_label_dir,single_stripe_value_dir];
+    
+    all_spect_widgets=[all_spect_widgets, single_stripe_widgets];
+    
+    % multiple stripes opts
+    multiple_stripe_label_num = view.Label(spectrum_image_options_panel, 'Number:', 10, [0.001 0.74 0.25 0.15]);
+    multiple_stripe_value_num = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.15]);
+    
+    multiple_stripe_label_dir = view.Label(spectrum_image_options_panel, 'Rotation:', 10, [0.001 0.54 0.25 0.15]);
+    multiple_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.15]);
+    
+    multiple_stripes_widgets = [multiple_stripe_label_num,multiple_stripe_value_num,multiple_stripe_label_dir,multiple_stripe_value_dir];
+    
+    % image from file
+    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.125,0, .60, .07]);
+    spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.725, 0, .15, .07], @spectImageFileCB);  
+    
+    img_from_file_widgets = [spect_img_path,spect_img_btn];    
+    all_spect_widgets=[all_spect_widgets, img_from_file_widgets];
+    
+    all_spect_widgets=[all_spect_widgets, multiple_stripes_widgets];
+    
+    % generate shape
+    generate_shape_button = view.Button(spectrum_image_options_panel,'generate shape',8,[1-.35,.25,.35,.25],@generateShapeCB);   
+    shape_save_btn = view.Button(spectrum_image_panel, 'Save', 8, [0.125, 0, .19, .07], @saveShapeImage);
     % image of shape
     spect_img = view.ImageWindow(spectrum_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.125,0, .60, .07]);
-    spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.725, 0, .15, .07], @spectImageFileCB);       
+     
     % magnitude image
     magnitude_image_panel = view.Container(spectrum_panel,panel_color,'Magnitude',10,[1-img_size,.50,img_size,img_size]);    
     magnitude_img = view.ImageWindow(magnitude_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));     
@@ -111,22 +199,30 @@ function project2_gui_final()
     filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
     filter_size_label_x = view.Label(filter_config_panel, 'Cutoff Freq:', 10, [0.001 0.74 0.25 0.15]);
     filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.15]);
-    filter_size_label_y = view.Label(filter_config_panel, 'Order(n)::', 10, [0.001 0.58 0.25 0.15]);
+    filter_size_label_y = view.Label(filter_config_panel, 'Order(n):', 10, [0.001 0.58 0.25 0.15]);
     filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.15]);
-    filter_sd_label = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.15]);
-    filter_std_dev = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.15]);
+    filter_size_label_z = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.15]);
+    filter_size_value_z = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.15]);
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);
+    
+    filter_x_widgets = [filter_size_label_x,filter_size_value_x];
+    filter_y_widgets = [filter_size_label_y, filter_size_value_y];
+    filter_z_widgets = [filter_size_label_z, filter_size_value_z];
+    
+    filter_option_widgets = [filter_x_widgets,filter_y_widgets,filter_z_widgets];
     
 %% Construct the About area
     about_panel = view.Container(tab4,panel_color,'About this software',10,[.1,.1,.8,.8]);    
     about_message = view.Label(about_panel, 'TBD - Future home of the about area (description of the project)!', 10, [0.2,0.5, .60, .07]);    
     
     % initialize text boxes to 0
-    view.InitializeValues([filter_size_value_x,filter_size_value_y,filter_std_dev]);
+    f_values = [filter_size_value_x,filter_size_value_y,filter_size_value_z];
+    view.InitializeValues(f_values);
+%     view.InitializeValues(all_spect_widgets);
+    view.HideWidgets(all_spect_widgets);
+    view.HideWidgets(filter_option_widgets);
     
 %% Define the callbacks for buttons etc.  
-%   TBD - create controller class which will house all callbacks 
-%   for every aspect of the UI
 
     % Callback function for "browser" button (image 1)
     function file1CB(hObj, event)
@@ -157,6 +253,10 @@ function project2_gui_final()
         ctrl.SaveImage(3, tab1);
     end    
 
+    function saveShapeImage(hObj, event)
+        ctrl.SaveImage(6, tab2);
+    end
+
     % Callback function for "Convolve" button
     function convCB(hObj, event)
         ctrl.DoConvolution(conv_img3);
@@ -165,6 +265,51 @@ function project2_gui_final()
     % opens a file dialog for the user to save the filter result
     function saveFilteredImage(hObj, event)        
         ctrl.SaveImage(5, tab3);        
+    end
+
+    function generateShapeCB(hObj, event)
+        spect_shape = spectrumImageTypes{get(spectrum_imageDD, 'Value')};          
+        switch(spect_shape)
+            
+            case 'Sinusoids'
+                params = [double(str2double(get(spect_sin_value_u,'String'))),...
+                    double(str2double(get(spect_sin_value_v, 'String'))),...
+                ];
+               ctrl.DoSinusoid(params, spect_img);
+            case 'Single Circle'
+                params = [double(str2double(get(spect_one_circle_value_r,'String')))];
+                ctrl.DoSingleCircle(params, spect_img);
+            case 'Single Rectangle'
+                params = [double(str2double(get(spect_one_rect_value_w,'String'))),...
+                          double(str2double(get(spect_one_rect_value_h,'String')))];
+                ctrl.DoSingleRectangle(params, spect_img);                
+            case 'Multiple Circles'
+                params = [double(str2double(get(spect_multi_circle_value_r,'String'))),...
+                          double(str2double(get(spect_multi_circle_value_x,'String'))),...
+                          double(str2double(get(spect_multi_circle_value_y,'String')))];
+                ctrl.DoMultipleCircles(params, spect_img);
+            case 'Multiple Rectangles'
+                params = [double(str2double(get(spect_multi_rect_value_w,'String'))),...
+                          double(str2double(get(spect_multi_rect_value_h,'String'))),...
+                          double(str2double(get(spect_multi_rect_value_x,'String'))),...
+                          double(str2double(get(spect_multi_rect_value_y,'String')))];
+                ctrl.DoMultipleRectangles(params, spect_img);                
+            case 'Single Stripes'
+                params = [double(str2double(get(single_stripe_value_dir,'String')))];
+                ctrl.DoSingleStripe(params, spect_img);
+            case 'Multiple Stripes'
+                params = [double(str2double(get(multiple_stripe_value_num,'String'))),...
+                    double(str2double(get(multiple_stripe_value_dir,'String')))];
+                ctrl.DoMultipleStripes(params, spect_img);                
+            case 'Image from File'
+                
+            otherwise
+                disp('bad shape type.')
+        end
+        
+%         
+%         model.CreateImage(6, x, imresize(x,img_icon));
+%         view.UpdateImage(spect_img, model.GetImageIcon(6));    
     end
 
     %   TBD - will get to this tomorrow, Friday the 13th!
@@ -187,78 +332,181 @@ function project2_gui_final()
     function spectrumImageTypeDDCallback(hObj, event)
         txt = spectrumImageTypes{get(spectrum_imageDD, 'Value')};
         disp(txt)
+        view.HideWidgets(all_spect_widgets);
+        
+        switch(txt)
+            
+            case 'Sinusoids'
+                view.ShowWidgets(sinusoid_widgets);
+            case 'Single Circle'
+                view.ShowWidgets(single_circle_widgets);
+            case 'Single Rectangle'
+                view.ShowWidgets(single_rectangle_widgets);
+            case 'Multiple Circles'
+                view.ShowWidgets(multiple_circles_widgets);
+            case 'Multiple Rectangles'
+                view.ShowWidgets(multiple_rectangles_widgets);
+            case 'Single Stripes'
+                view.ShowWidgets(single_stripe_widgets);
+            case 'Multiple Stripes'
+                view.ShowWidgets(multiple_stripes_widgets);
+            case 'Image from File'
+                view.ShowWidgets(img_from_file_widgets);
+            otherwise
+                disp('bad shape type.')
+        end
     end
     
     % Callback function for filter dropdown
     function filterTypeDDCallback(hObj, event)
         txt = filterTypes{get(filterDD, 'Value')};
         disp(txt)
-        if(strcmp(txt,'Impulse Response') == 0)
-            set(filter_size_label_x, 'String', 'Cutoff Freq:');
-            set(filter_size_label_x, 'String', 'Order(n):');
-            set(freqRespDD,'Visible', 'on');
-            set(freqVarietyDD, 'Visible', 'on');
-            set(fvariety_label, 'Visible', 'on');
-            set(impRespDD,'Visible', 'off');
-            disp('Impulse response selected.')
-        else
-            set(filter_size_label_x, 'String', 'Size(x):');
-            set(filter_size_label_x, 'String', 'Size(y):');
-            set(freqRespDD,'Visible', 'off');
-             set(freqVarietyDD, 'Visible', 'off');
-             set(fvariety_label, 'Visible', 'off');
-            set(impRespDD,'Visible', 'on');
-            disp('Frequency response selected.')
-        end        
+        xt = impulseResponseTypes{get(impRespDD, 'Value')};
+        disp(txt)
+        
+        switch(txt)    
+            
+            case 'Impulse Response'
+%                 set(filter_size_label_x, 'String', 'Size(x):');
+%                 set(filter_size_label_x, 'String', 'Size(y):');
+                set(freqRespDD,'Visible', 'off');
+                set(freqVarietyDD, 'Visible', 'off');
+                set(fvariety_label, 'Visible', 'off');
+                set(impRespDD,'Visible', 'on');
+                set(freqRespDD,'Visible', 'off');
+                disp('Impulse response selected.')
+            case 'Frequency Response'
+%                 set(filter_size_label_x, 'String', 'Cutoff Freq:');
+%                 set(filter_size_label_x, 'String', 'Order(n):');
+                set(freqRespDD,'Visible', 'on');
+                set(freqVarietyDD, 'Visible', 'on');
+                set(fvariety_label, 'Visible', 'on');
+                set(freqRespDD,'Visible', 'on');
+                set(impRespDD,'Visible', 'off');
+                disp('Frequency response selected.')
+            otherwise
+                disp('bad filter type')
+        end     
     end
 
     function freqVarietyTypeDDCallback(hObj, event)
-        txt = frequencyVarietyTypes{get(freqVarietyDD, 'Value')};
+        txt = frequencyResponseTypes{get(freqRespDD, 'Value')};
         disp(txt)        
+        view.HideWidgets(filter_option_widgets);
+%         frequencyResponseTypes  = {'lowpass', 'highpass','bandpass','bandreject','notch reject'};
+%         frequencyVarietyTypes = {'ideal', 'gaussian', 'butterworth'};
+%         txt = frequencyResponseTypes{get(freqRespDD, 'Value')};        
+        switch(txt)
+            case 'lowpass'
+                switch(frequencyVarietyTypes{get(freqVarietyDD, 'Value')})
+                    case 'ideal'
+                        view.ShowWidgets(filter_x_widgets);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                    case 'gaussian'
+                        view.ShowWidgets(filter_x_widgets);            
+                        set(filter_size_label_x,'String','Cycles/samp.');
+                    case 'butterworth'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cycles/samp.');
+                        set(filter_size_label_y,'String','Order(n)');
+                    otherwise
+                        disp('bad response type')
+                end
+            case 'highpass'
+                switch(frequencyVarietyTypes{get(freqVarietyDD, 'Value')})
+                    case 'ideal'
+                        view.ShowWidgets(filter_x_widgets);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                    case 'gaussian'
+                        view.ShowWidgets(filter_x_widgets);            
+                        set(filter_size_label_x,'String','Cycles/samp.');
+                    case 'butterworth'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cycles/samp.');
+                        set(filter_size_label_y,'String','Order(n)');
+                    otherwise
+                        disp('bad response type')
+                end                
+            case 'bandpass'
+                switch(frequencyVarietyTypes{get(freqVarietyDD, 'Value')})
+                    case 'ideal'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                    case 'gaussian'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                    case 'butterworth'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_label_z,'String','Order(n)');
+                    otherwise
+                        disp('bad response type')
+                end
+            case 'bandreject'
+                switch(frequencyVarietyTypes{get(freqVarietyDD, 'Value')})
+                    case 'ideal'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                    case 'gaussian'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                    case 'butterworth'
+                        view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
+                        set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_label_z,'String','Order(n)');
+                    otherwise
+                        disp('bad response type')
+                end
+            case 'notch reject'
+                
+            otherwise
+                disp('bad frequency variety selected.')
+        end
+        
     end
 
     % Callback function for impulse response dropdown
     function impulseTypeDDCallback(hObj,event)
         txt = impulseResponseTypes{get(impRespDD, 'Value')};
         disp(txt)
-        
+        view.HideWidgets(filter_option_widgets);
         switch(txt)            
             case 'average'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_label_x,filter_size_value_x,...
-                    filter_size_label_y, filter_size_value_y]);
+                view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                set(filter_size_label_x,'String','Width');
+                set(filter_size_label_y,'String','Height');
             case 'disk'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);            
+                view.ShowWidgets([filter_x_widgets]);    
+                set(filter_size_label_x,'String','Radius');
             case 'gaussian'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
+                set(filter_size_label_x,'String','Width');
+                set(filter_size_label_y,'String','Height');
+                set(filter_size_label_z,'String','Sigma');
             case 'laplacian'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);
+                view.ShowWidgets([filter_x_widgets]);
             case 'log'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
+                set(filter_size_label_x,'String','Rows');
+                set(filter_size_label_y,'String','Cols');
+                set(filter_size_label_z,'String','Sigma');
             case 'motion'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
-                view.ShowWidgets([filter_size_label_x, filter_size_value_x,filter_size_value_y]);
+                view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
+                set(filter_size_label_x,'String','Length');
+                set(filter_size_label_y,'String','Theta');
             case 'sobel'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                
             case 'prewitt'
-                view.HideWidgets([filter_size_value_x,filter_size_value_y,filter_std_dev,...
-                    filter_size_label_x, filter_size_label_y, filter_sd_label]);
+                
             case 'unsharp'
-                view.HideWidgets([filter_size_label_x, filter_size_value_x,filter_size_value_y,filter_std_dev]);
-                view.ShowWidgets([filter_size_label_x, filter_size_value_x]);
+                view.ShowWidgets([filter_x_widgets]);
+                set(filter_size_label_x,'String','Alpha');
             otherwise
                 disp('Invalid filter typ...e' );
         end  
@@ -275,7 +523,7 @@ function project2_gui_final()
     function filtCB(hObj, event)        
         params = [double(str2double(get(filter_size_value_x,'String'))),...
             double(str2double(get(filter_size_value_y, 'String'))),...
-            double(str2double(get(filter_std_dev, 'String')))];     
+            double(str2double(get(filter_size_value_z, 'String')))];     
         
         if(strcmp(filterTypes{get(filterDD, 'Value')},'Impulse Response')==0)
             ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD,'Value')},...
