@@ -44,15 +44,13 @@ function project2_gui_final()
     home_panel = view.Container(tab0,panel_color,'Home - Project 2',10,[.05,.05,.9,.9]);    
     home_img1 = view.ImageWindow(home_panel, [0.075,0.07, .85, .85], zeros(600,800));
     home_message1 = view.Label(home_panel,  'Welcome home! This is our Project 2 GUI!', 10, [0.12,.93, .76, .045]);
-    home_message1 = view.Label(home_panel,  'Jeff Jenkins, Time Aigbe, Ali Algahtani', 10, [0.12,.87, .76, .045]);
+    home_message2 = view.Label(home_panel,  'Jeff Jenkins, Time Aigbe, Ali Algahtani', 10, [0.12,.87, .76, .045]);
     view.UpdateImage(home_img1, imread('CUA_logo.jpg'));    
 %% Construct the convolution area
     img1_panel = view.Container(tab1,panel_color,'Image 1',10,[img_offset,1-(img_size+img_offset),img_size,img_size]);    
-    conv_img1 = view.ImageWindow(img1_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-    
+    conv_img1 = view.ImageWindow(img1_panel, [0.075,0.07, .85, .85], zeros(img_icon));    
     img2_panel = view.Container(tab1,panel_color,'Image 2',10,[img_offset,1-2*(img_size+img_offset),img_size,img_size]);
-    conv_img2 = view.ImageWindow(img2_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-      
+    conv_img2 = view.ImageWindow(img2_panel, [0.075,0.07, .85, .85], zeros(img_icon));      
     % options panels
     convolve_options_panel = view.Container(tab1,panel_color,'Options',10,[1-(img_offset+img_size),1-(img_size+img_offset),img_size,img_size]); 
     convolve_image_type_label = view.Label(convolve_options_panel, 'Type: ', 10, [0.01, 0.81, 0.12, 0.15]);
@@ -84,19 +82,16 @@ function project2_gui_final()
     img2_btn  = view.Button(img2_panel, 'load', 8, [.725, 0, .15, .07], @file2CB);   
     img2_from_path_widgets = [img2_path,img2_btn];
     conv_img_from_path_widgets = [img1_from_path_widgets, img2_from_path_widgets];
-    all_conv_widgets = [all_conv_widgets, conv_img_from_path_widgets];
-    
+    all_conv_widgets = [all_conv_widgets, conv_img_from_path_widgets];    
     % image size
     conv_image_label_w = view.Label(convolve_options_panel, 'Image Size (w,h):', 10, [0.001 0.25 0.35 0.1]);
     conv_image_value_w = view.Edit(convolve_options_panel, 8, [0.37 0.25 0.20 0.1]);       
     conv_image_value_h = view.Edit(convolve_options_panel, 8, [0.6 0.25 0.20 0.1]);    
     conv_image_size_widgets = [conv_image_label_w,conv_image_value_w,conv_image_value_h];
-    all_conv_widgets=[all_conv_widgets,conv_image_size_widgets];
-    
+    all_conv_widgets=[all_conv_widgets,conv_image_size_widgets];    
     % apply to image 1, apply to image 2
     conv_im1_button = view.Button(convolve_options_panel,'Apply to Image 1',8,[.001,.001,.35,.15],@convImage1Callback); 
-    conv_im2_button = view.Button(convolve_options_panel,'Apply to Image 2',8,[.61,.001,.35,.15],@convImage2Callback); 
-    
+    conv_im2_button = view.Button(convolve_options_panel,'Apply to Image 2',8,[.61,.001,.35,.15],@convImage2Callback);     
     img3_panel = view.Container(tab1,panel_color,'Result',10,[1-img_size,.1,img_size,img_size]);
     conv_img3 = view.ImageWindow(img3_panel, [0.075,0.07, .85, .85], zeros(img_icon));
     img3_save_btn = view.Button(img3_panel, 'Save', 8, [0.001, 0, .19, .15], @saveImage);
@@ -166,15 +161,12 @@ function project2_gui_final()
     spect_img_path = view.Edit(spectrum_image_panel, 8, [0.125,0, .60, .15]);
     spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.725, 0, .15, .15], @spectImageFileCB);      
     img_from_file_widgets = [spect_img_path,spect_img_btn];    
-    all_spect_widgets=[all_spect_widgets, img_from_file_widgets];   
-    
+    all_spect_widgets=[all_spect_widgets, img_from_file_widgets];       
     spect_image_label_w = view.Label(spectrum_image_options_panel, 'Image Size (w,h):', 10, [1-.44 0.78 0.4 0.2]);
     spect_image_value_w = view.Edit(spectrum_image_options_panel, 8, [1-.45 0.57 0.17 0.2]);       
     spect_image_value_h = view.Edit(spectrum_image_options_panel, 8, [1-.2 0.57 0.17 0.2]);    
     spect_image_size_widgets = [spect_image_label_w,spect_image_value_w,spect_image_value_h];
-    all_spect_widgets=[all_spect_widgets, spect_image_size_widgets];   
-    
-    
+    all_spect_widgets=[all_spect_widgets, spect_image_size_widgets];      
     % generate shape
     generate_shape_button = view.Button(spectrum_image_options_panel,'generate shape',8,[1-.45,.15,.35,.25],@generateShapeCB);   
     shape_save_btn = view.Button(spectrum_image_panel, 'Save', 8, [0.125, 0, .19, .07], @saveShapeImage);

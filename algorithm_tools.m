@@ -390,18 +390,14 @@ classdef algorithm_tools < handle
         obj.SetResult((s_img));
       end      
       function obj = MultipleCircles(obj, params,sz)
-%         c_grid = mycomb(sz(1),sz(2), params(2), params(3));
         s_img = mycirc(params(1)*2, params(1)*2, params(1));        
-%         c_res = conv2(c_grid, s_img, 'same');
-        c_res = mycomb(s_img, sz(1), sz(2), params(3), params(4));
+        c_res = mycomb(s_img, sz(1), sz(2), params(2), params(3));
         obj.SetResult((c_res));
       end      
       function obj = MultipleRectangles(obj, params,sz)
-%         c_grid = mycomb(sz(1),sz(2), params(3), params(4));
         bigger_dim = max(params(1:2));
         s_img = myrect(bigger_dim*2, bigger_dim*2, params(1), params(2));    
         c_res = mycomb(s_img, sz(1), sz(2), params(3), params(4));
-%         c_res = conv2(c_grid, s_img, 'same');
         obj.SetResult((c_res));
       end      
       function obj = SingleStripe(obj, params,sz)
