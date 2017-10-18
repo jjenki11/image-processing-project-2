@@ -2,6 +2,11 @@
 % Optical Image and Signal Processing
 % Jeff Jenkins, Time Aigbe, Ali Algahtani
 
+%   Suggestions from class
+%show filter also in filtering tab, 
+%add defaults for about tab.
+
+
 %%
 function project2_gui_final()
  
