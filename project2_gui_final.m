@@ -99,8 +99,8 @@ function project2_gui_final()
     
     img3_panel = view.Container(tab1,panel_color,'Result',10,[1-img_size,.1,img_size,img_size]);
     conv_img3 = view.ImageWindow(img3_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-    img3_save_btn = view.Button(img3_panel, 'Save', 8, [0.125, 0, .19, .15], @saveImage);
-    img3_reset_btn  = view.Button(img3_panel, 'reset', 8, [.725, 0, .19, .15], @resetImage);    
+    img3_save_btn = view.Button(img3_panel, 'Save', 8, [0.001, 0, .19, .15], @saveImage);
+    img3_reset_btn  = view.Button(img3_panel, 'reset', 8, [.8, 0, .19, .15], @resetImage);    
     conv_button = view.Button(tab1,'convolve',8,[.47,.5,.07,.05],@convCB);        
 %% Construct the Spectrum Drawing area
     spectrum_panel = view.Container(tab2,panel_color,'Draw Spectrum',10,[.05,.05,.9,.9]);        

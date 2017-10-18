@@ -343,7 +343,7 @@ classdef controller < handle
        end
    %    creates an image from data at a specified index  
        function obj = GenerateImageIcon(obj, idx, data, dest)
-        obj.GetModel().CreateImage(idx, data, imresize(data,obj.img_icon));
+        obj.GetModel().CreateImage(idx, data,imresize(data,obj.img_icon));
         obj.GetView().UpdateImage(dest, obj.GetModel().GetImageIcon(idx),1); 
        end
   %     set the data model
