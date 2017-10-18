@@ -156,10 +156,10 @@ function project2_gui_final()
     multiple_stripe_label_dir = view.Label(spectrum_image_options_panel, 'Rotation:', 10, [0.001 0.54 0.25 0.2]);
     multiple_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2]);    
     multiple_stripes_widgets = [multiple_stripe_label_num,multiple_stripe_value_num,multiple_stripe_label_dir,multiple_stripe_value_dir];
-    all_spect_widgets=[all_spect_widgets, multiple_stripes_widgets];    
+    all_spect_widgets=[all_spect_widgets, multiple_stripes_widgets];
     % image from file
-    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.125,0, .60, .15]);
-    spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.725, 0, .15, .15], @spectImageFileCB);      
+    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.23,0, .57, .07]);
+    spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.8, 0, .2, .07], @spectImageFileCB);      
     img_from_file_widgets = [spect_img_path,spect_img_btn];    
     all_spect_widgets=[all_spect_widgets, img_from_file_widgets];       
     spect_image_label_w = view.Label(spectrum_image_options_panel, 'Image Size (w,h):', 10, [1-.44 0.78 0.4 0.2]);
@@ -169,7 +169,7 @@ function project2_gui_final()
     all_spect_widgets=[all_spect_widgets, spect_image_size_widgets];      
     % generate shape
     generate_shape_button = view.Button(spectrum_image_options_panel,'generate shape',8,[1-.45,.15,.35,.25],@generateShapeCB);   
-    shape_save_btn = view.Button(spectrum_image_panel, 'Save', 8, [0.125, 0, .19, .07], @saveShapeImage);
+    shape_save_btn = view.Button(spectrum_image_panel, 'Save', 8, [0.001, 0, .19, .07], @saveShapeImage);
     % image of shape
     spect_img = view.ImageWindow(spectrum_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));     
     % magnitude image
@@ -225,16 +225,18 @@ function project2_gui_final()
     about_panel = view.Container(tab4,panel_color,'About this software',10,[.05,.05,.9,.9]);    
     about_message = view.Label(about_panel, char(about_txt), 10, [0.1,0.1, .8, .8]);        
     % initialize text boxes to 0
-    f_values = [filter_size_value_x,filter_size_value_y,filter_size_value_z];
+    f_values = [filter_size_value_x,filter_size_value_y,filter_size_value_z,...
+        spect_image_value_w,spect_image_value_h,conv_image_value_w,conv_image_value_h,...
+        spect_multi_circle_value_r,spect_multi_circle_value_x,spect_multi_circle_value_y,...
+        spect_multi_rect_value_w,spect_multi_rect_value_h,spect_multi_rect_value_x,...
+        spect_multi_rect_value_y,conv_sin_value_u,conv_sin_value_v,conv_one_circle_value_r,...
+        conv_one_rect_value_w,conv_one_rect_value_h,...
+        spect_sin_value_u,spect_sin_value_v,spect_one_circle_value_r,...
+        spect_one_rect_value_w,spect_one_rect_value_h,multiple_stripe_value_num,...
+        multiple_stripe_value_dir,single_stripe_value_dir];
     view.InitializeValues(f_values);
-    view.HideWidgets(all_spect_widgets);
-    view.HideWidgets(all_conv_widgets);
-    view.HideWidgets(filter_option_widgets);    
-    view.ShowWidgets(sinusoid_widgets);
-    view.ShowWidgets(conv_sinusoid_widgets);
-    view.ShowWidgets(filter_x_widgets);
-    view.ShowWidgets(conv_image_size_widgets);
-    view.ShowWidgets(spect_image_size_widgets);
+    view.HideWidgets([all_spect_widgets,all_conv_widgets,filter_option_widgets]);
+    view.ShowWidgets([sinusoid_widgets,conv_sinusoid_widgets,filter_x_widgets,conv_image_size_widgets,spect_image_size_widgets]);
     
 %% Define the callbacks for buttons etc.  
     % Callback function for "browser" button (image 1)
