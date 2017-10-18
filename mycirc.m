@@ -8,7 +8,7 @@ function r = mycirc(im_w, im_h, rd)
             xx = abs(x-x0);
             yy = abs(y-y0);
             if(sqrt(xx.^2 + yy.^2) < rd)
-                r(x,y) = 1;
+                r(x,y) = 255;
             end
         end
     end

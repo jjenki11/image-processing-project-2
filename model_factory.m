@@ -17,7 +17,6 @@ classdef model_factory  < handle
         obj.SetImageData(idx, data);
         obj.SetImageIcon(idx, icon);
       end     
-
       % sets the actual image data
       function obj = SetImageData(obj, idx, d)
           obj.Images(idx).ImageData = d;
@@ -33,8 +32,7 @@ classdef model_factory  < handle
       % gets the thumbnail image
       function r = GetImageIcon(obj, idx)
           r = obj.Images(idx).ImageIcon;
-      end
-      
+      end      
       function obj = SetShapeData(obj, idx, d)
           obj.Shapes(idx).ImageData = d;
       end      

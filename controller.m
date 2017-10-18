@@ -1,20 +1,17 @@
 classdef controller < handle
    properties
-        % tbd we can put parent in here so we dont have to pass it
         img_icon = [250 250]; 
         DataModel = struct
         View
         Result
    end
-   methods
-      
+   methods      
       % constructor for the algorithm tools class
-      function obj = controller(dm, vw)
-        % all initializations, calls to base class, etc. here,
-        obj.SetModel(dm);
+      function obj = controller(vw)
+        obj.SetModel(model_factory());
         obj.SetView(vw);            
       end
-      
+  %     select image from file
       function obj = SelectFile(obj, parent, txt, idx, i_update)
          p = obj.GetView().FileBrowser(parent,[0.1 0.37 0.4 0.2],[]);
         set(txt,'String',p);
@@ -24,11 +21,11 @@ classdef controller < handle
         end
         obj.GenerateImageIcon(idx, img, i_update);
       end
-      
+      % reset the image at the index  provided with content
       function obj = Reset(obj, img, content)
         obj.GetView().UpdateImage(img, content);
       end
-      
+  %     save image to file
       function obj = SaveImage(obj, idx, p)
         xx = obj.GetModel().GetImageData(idx);
         maxv = max(xx(:));
@@ -37,151 +34,126 @@ classdef controller < handle
         obj.GetView().FileSaver(p, [0.1, 0.37, 0.4, 0.2], mapped_array);
         disp('File saved!'); 
       end
-      
+  %     convolution
       function obj = DoConvolution(obj, slot)
         convolution = algorithm_tools(obj.GetModel());        
         convolution.ConvolveImages(1,2);        
-        x = convolution.GetResult();        
-        obj.GenerateImageIcon(3, x, slot);
+        obj.GenerateImageIcon(3, convolution.GetResult(), slot);
       end
-      
-      function obj = DoSinusoid(obj, params, dest)          
-%          s_img = obj.GenerateSinusoid(6, params);
+  %     sinusoids
+      function obj = DoSinusoid(obj, params, dest, sz, idx)          
         sin_shape= algorithm_tools(obj.GetModel());
-               sin_shape.Sinusoid(params);
-               x=sin_shape.GetResult();
-         obj.GenerateImageIcon(6, x, dest);          
+        sin_shape.Sinusoid(params, sz);
+        obj.GenerateImageIcon(idx, sin_shape.GetResult(), dest);          
       end
-      
-      function obj = DoSingleCircle(obj, params, dest)          
+  %     circles
+      function obj = DoSingleCircle(obj, params, dest, sz, idx)          
         circ_shape= algorithm_tools(obj.GetModel());
-        circ_shape.SingleCircle(params);
-        x=circ_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);          
+        circ_shape.SingleCircle(params, sz);
+        obj.GenerateImageIcon(idx, circ_shape.GetResult(), dest);          
       end
-      
-      function obj = DoSingleRectangle(obj, params, dest)          
-        rect_shape= algorithm_tools(obj.GetModel());
-        rect_shape.SingleRectangle(params);
-        x=rect_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);          
-      end
-      
-      function obj = DoMultipleCircles(obj, params, dest)          
+      function obj = DoMultipleCircles(obj, params, dest, sz,idx)          
         circ_shape= algorithm_tools(obj.GetModel());
-        circ_shape.MultipleCircles(params);
-        x=circ_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);          
+        circ_shape.MultipleCircles(params,sz);
+        obj.GenerateImageIcon(idx, circ_shape.GetResult(), dest);          
       end
-      
-      function obj = DoMultipleRectangles(obj, params, dest)          
+  %     rectangles
+      function obj = DoSingleRectangle(obj, params, dest, sz, idx)          
         rect_shape= algorithm_tools(obj.GetModel());
-        rect_shape.MultipleRectangles(params);
-        x=rect_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);          
+        rect_shape.SingleRectangle(params, sz);
+        obj.GenerateImageIcon(idx, rect_shape.GetResult(), dest);          
       end
-      
-      function obj = DoSingleStripe(obj, params, dest) 
-        stripe_shape= algorithm_tools(obj.GetModel());
-        stripe_shape.SingleStripe(params);
-        x=stripe_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);     
+      function obj = DoMultipleRectangles(obj, params, dest, sz,idx)          
+        rect_shape= algorithm_tools(obj.GetModel());
+        rect_shape.MultipleRectangles(params,sz);
+        obj.GenerateImageIcon(idx, rect_shape.GetResult(), dest);          
       end
-      
-      function obj = DoMultipleStripes(obj, params, dest) 
+  %     stripes
+      function obj = DoSingleStripe(obj, params, dest, sz,idx) 
         stripe_shape= algorithm_tools(obj.GetModel());
-        stripe_shape.MultipleStripes(params);
-        x=stripe_shape.GetResult();
-        obj.GenerateImageIcon(6, x, dest);     
+        stripe_shape.SingleStripe(params,sz);
+        obj.GenerateImageIcon(idx, stripe_shape.GetResult(), dest);     
+      end      
+      function obj = DoMultipleStripes(obj, params, dest, sz,idx) 
+        stripe_shape= algorithm_tools(obj.GetModel());
+        stripe_shape.MultipleStripes(params,sz);
+        obj.GenerateImageIcon(idx, stripe_shape.GetResult(), dest);     
       end
       
       function obj = DoFiltering(obj, fType, params, dest, variety,dest2)
         % we check the filter type to choose correct controller call 
         switch(fType)            
             case 'average'
-                x = obj.DoAverageFilter(params);
-                obj.GenerateImageIcon(5, obj.DoAverageFilter(params), dest);
+                obj.GenerateImageIcon(5,obj.DoAverageFilter(params), dest);
             case 'disk'
-                x = obj.DoDiskFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoDiskFilter(params), dest);
             case 'gaussian'
-                x = obj.DoGaussianFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoGaussianFilter(params),dest);
             case 'laplacian'
-                x = obj.DoLaplacianFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoLaplacianFilter(params),dest);
             case 'log'
-                x = obj.DoLogFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoLogFilter(params), dest);
             case 'motion'
-                x = obj.DoMotionFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoMotionFilter(params), dest);
             case 'sobel'
-                x = obj.DoSobelFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoSobelFilter(params), dest);
             case 'prewitt'
-                x = obj.DoPrewittFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
+                obj.GenerateImageIcon(5,obj.DoPrewittFilter(params), dest);
             case 'unsharp'
-                x = obj.DoUnsharpFilter(params);
-                obj.GenerateImageIcon(5, x, dest);
-                
-            %   still need to implement the frequency filters!
+                obj.GenerateImageIcon(5,obj.DoUnsharpFilter(params), dest);
             case 'lowpass'
                 switch(variety)
                     case 'ideal'
-                        x = obj.DoLowpassIdealFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);                        
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoLowpassIdealFilter(params), dest);                        
                     case 'gaussian'
-                        x = obj.DoLowpassGaussianFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoLowpassGaussianFilter(params), dest);
                     case 'butterworth'
-                        x = obj.DoLowpassButterworthFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoLowpassButterworthFilter(params), dest);
                     otherwise
                         disp('bad filter type')
                 end       
             case 'highpass'
                 switch(variety)
                     case 'ideal'
-                        x = obj.DoHighpassIdealFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);                        
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoHighpassIdealFilter(params), dest);                        
                     case 'gaussian'
-                        x = obj.DoHighpassGaussianFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoHighpassGaussianFilter(params), dest);
                     case 'butterworth'
-                        disp('i am doing the right hpbutterworth call...')
-                        x = obj.DoHighpassButterworthFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoHighpassButterworthFilter(params), dest);
                     otherwise
                         disp('bad filter type')
-                end       
-
+                end
             case 'bandpass'
                 switch(variety)
                     case 'ideal'
-                        x = obj.DoBandpassIdealFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);                        
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoBandpassIdealFilter(params), dest);                        
                     case 'gaussian'
-                        x = obj.DoBandpassGaussianFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
-                    case 'butterworth'
-                        x = obj.DoBandpassButterworth(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoBandpassGaussianFilter(params), dest);
+                    case 'butterworth';
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoBandpassButterworth(params), dest);
                     otherwise
                         disp('bad filter type')
                 end       
             case 'bandreject'
                 switch(variety)
                     case 'ideal'
-                        x = obj.DoBandrejectIdealFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);                        
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoBandrejectIdealFilter(params), dest);                        
                     case 'gaussian'
-                        x = obj.DoBandrejectGaussianFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                            obj.DoBandrejectGaussianFilter(params), dest);
                     case 'butterworth'
-                        x = obj.DoBandrejectButterworthFilter(params);
-                        obj.GenerateImageIcon(5, x, dest);
+                        obj.GenerateImageIcon(5, ...
+                           obj.DoBandrejectButterworthFilter(params),dest);
                     otherwise
                         disp('bad filter type')
                 end   
@@ -193,43 +165,33 @@ classdef controller < handle
                 xi = obj.DoNotchFilterInit(4);
                 X=fft2(double(xi));
                 [N,M]=size(xi);
-                midu = (fix(M/2)+1);
-                midv = (fix(N/2)+1);
-                X2 = X;
-                button = 0;
+                midu = (fix(M/2)+1); midv = (fix(N/2)+1);
+                X2 = X;  button = 0;
                 % filter half width and height
-                half_width = 7;
-                half_height = 7;
+                half_width = 7;  half_height = 7;
                 H = ones( N, M );                
-                disp('Left Mouse to selected notch frequency, right to exit')
+                disp('Left Mouse to select notch frequency, right to exit')
                 while button~=3
                     f2 = figure(888);
                     im(abs(fftshift(X2)), 0, 0, 3 );
                     title('Image Magnitude Spectrum');
                     [x0,y0,button] = ginput(1);
-                    x0 = round(x0);
-                    y0 = round(y0);
+                    x0 = round(x0);  y0 = round(y0);
                     %make sure the selected points are at least 
-                    % at a distance more than half the width and height of the filter 
+                    % at a distance > .5(h,w) of the filter
                     x0( x0 < half_width+2 ) = half_width + 2;
                     x0( x0 > M - half_width ) = M - half_width;
                     y0( y0 < half_height+2 ) = half_height + 2;
                     y0( y0 > N - half_height ) = N - half_height;
                     % starting and end point of the notch filter in x and y
-                    stx = x0-half_width;
-                    edx = x0+half_width;
-                    sty = y0-half_height;
-                    edy = y0+half_height;
-                    % starting and end point of the notch filter conjugate point in x and y
-                    stx2 = 2*midu - edx;
-                    edx2 = 2*midu - stx;
-                    sty2 = 2*midv - edy;
-                    edy2 = 2*midv - sty;
+                    stx = x0-half_width;  sty = y0-half_height;
+                    edx = x0+half_width;  edy = y0+half_height;
+                    % start/end point of notch filter conjugate pt in (x,y)
+                    stx2 = 2*midu - edx;  edx2 = 2*midu - stx;
+                    sty2 = 2*midv - edy;  edy2 = 2*midv - sty;
                     % apply the notch filter
-                    H(sty:edy,stx:edx) = 0;
-                    H(sty2:edy2,stx2:edx2) = 0;
-                    X2 = X2.*ifftshift(H);
-                    x2 = ifft2(X2);  
+                    H(sty:edy,stx:edx) = 0;  H(sty2:edy2,stx2:edx2) = 0;
+                    X2 = X2.*ifftshift(H);   x2 = ifft2(X2);  
                     obj.GenerateImageIcon(5, x2, dest);
                 end
                 obj.GenerateImageIcon(5, x2, dest);
@@ -291,9 +253,8 @@ classdef controller < handle
         unsharp_filter = algorithm_tools(obj.GetModel());     
         unsharp_filter.UnsharpFilter(4,params);        
         r = unsharp_filter.GetResult();          
-       end
-       
-       %    high pass filters       
+       end       
+   %    high pass filters       
        function r = DoHighpassIdealFilter(obj, params)
         hpideal_filter = algorithm_tools(obj.GetModel());
         hpideal_filter.HPFIdeal(4, params);
@@ -308,9 +269,8 @@ classdef controller < handle
         hpbutter_filter = algorithm_tools(obj.GetModel());
         hpbutter_filter.HPFButterworth(4, params);
         r = hpbutter_filter.GetResult();
-       end
-       
-      %    low pass filters       
+       end       
+  %    low pass filters       
        function r = DoLowpassIdealFilter(obj, params)
         lpideal_filter = algorithm_tools(obj.GetModel());
         lpideal_filter.LPFIdeal(4, params);
@@ -326,78 +286,81 @@ classdef controller < handle
         lpbutter_filter.LPFButterworth(4, params);
         r = lpbutter_filter.GetResult();
        end
-       
+   %    bandpass filters
        function r = DoBandpassIdealFilter(obj, params)
         bpideal_filter = algorithm_tools(obj.GetModel());
         bpideal_filter.BandpassIdeal(4, params);
         r = bpideal_filter.GetResult();
-       end
-       
+       end       
        function r = DoBandpassGaussianFilter(obj, params)
         bpbutter_filter = algorithm_tools(obj.GetModel());
         bpbutter_filter.BandpassGaussian(4, params);
         r = bpbutter_filter.GetResult();
-       end
-       
+       end       
        function r = DoBandpassButterworth(obj, params)
         bpbutter_filter = algorithm_tools(obj.GetModel());
         bpbutter_filter.BandpassButterworth(4, params);
         r = bpbutter_filter.GetResult();
-       end
-       
-       
+       end       
+   %    bandreject filters
        function r = DoBandrejectIdealFilter(obj, params)
         brideal_filter = algorithm_tools(obj.GetModel());
         brideal_filter.BandrejectIdeal(4, params);
         r = brideal_filter.GetResult();
-       end
-       
+       end       
        function r = DoBandrejectGaussianFilter(obj, params)
         brgauss_filter = algorithm_tools(obj.GetModel());
         brgauss_filter.BandrejectGaussian(4, params);
         r = brgauss_filter.GetResult();
-       end
-       
+       end       
        function r = DoBandrejectButterworthFilter(obj, params)
         brbutter_filter = algorithm_tools(obj.GetModel());
         brbutter_filter.BandrejectButterworth(4, params);
         r = brbutter_filter.GetResult();
        end
-       
+   %    notch filter
        function r = DoNotchFilterInit(obj, idx)
-           nr_filter = algorithm_tools(obj.GetModel());
-           nr_filter.NotchFilterInit(idx);
-           r = nr_filter.GetResult();
+        nr_filter = algorithm_tools(obj.GetModel());
+        nr_filter.NotchFilterInit(idx);
+        r = nr_filter.GetResult();
        end
-       
-       
+   %    Sinusoid
        function r = GenerateSinusoid(obj, idx, params, dest)
         sin_shape = algorithm_tools(obj.GetModel());
         sin_shape.Sinusoid(params);
         r = sin_shape.GetResult();           
        end
-       
-       
-       
-      function obj = GenerateImageIcon(obj, idx, data, dest)
+   %    magnitude and phase for drawing spectrum
+       function r = DoMagnitudeImage(obj, idx)
+        spect_mag = algorithm_tools(obj.GetModel());     
+        spect_mag.MagnitudeImage(idx);        
+        r = spect_mag.GetResult();        
+       end;       
+       function r = DoPhaseImage(obj, idx)
+        spect_phase = algorithm_tools(obj.GetModel());     
+        spect_phase.PhaseImage(idx); 
+        r = spect_phase.GetResult();
+       end
+   %    creates an image from data at a specified index  
+       function obj = GenerateImageIcon(obj, idx, data, dest)
         obj.GetModel().CreateImage(idx, data, imresize(data,obj.img_icon));
         obj.GetView().UpdateImage(dest, obj.GetModel().GetImageIcon(idx),1); 
-      end
-      
-      function obj = SetModel(obj,m)
-          obj.DataModel = m;
-      end
-      
-      function obj = SetView(obj,v)
-          obj.View = v;
-      end
-      
-      function r = GetModel(obj)
-          r = obj.DataModel;
-      end
-      
-      function r = GetView(obj)
-          r = obj.View;
-      end
+       end
+  %     set the data model
+       function obj = SetModel(obj,m)
+        obj.DataModel = m;
+       end
+  %     set the view
+       function obj = SetView(obj,v)
+        obj.View = v;
+       end
+  %     get the model
+       function r = GetModel(obj)
+        r = obj.DataModel;
+       end
+  %     get the view
+       function r = GetView(obj)
+        r = obj.View;
+       end
    end
 end
