@@ -80,80 +80,114 @@ classdef controller < handle
         obj.GenerateImageIcon(idx, stripe_shape.GetResult(), dest);     
       end
       
-      function obj = DoFiltering(obj, fType, params, dest, variety,dest2)
+      function obj = DoDisplayFilter(obj,fType,params,dest,variety,dest2)
+        
+      end
+          
+      function obj = DoFiltering(obj, fType, params, dest, variety,dest2,fimg)
         % we check the filter type to choose correct controller call 
         switch(fType)            
             case 'average'
-                obj.GenerateImageIcon(5,obj.DoAverageFilter(params), dest);
+                [r,f] = obj.DoAverageFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'disk'
-                obj.GenerateImageIcon(5,obj.DoDiskFilter(params), dest);
+                [r,f] = obj.DoDiskFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'gaussian'
-                obj.GenerateImageIcon(5,obj.DoGaussianFilter(params),dest);
+                [r,f] = obj.DoGaussianFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'laplacian'
-                obj.GenerateImageIcon(5,obj.DoLaplacianFilter(params),dest);
+                [r,f] = obj.DoLaplacianFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'log'
-                obj.GenerateImageIcon(5,obj.DoLogFilter(params), dest);
+                [r,f] = obj.DoLogFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'motion'
-                obj.GenerateImageIcon(5,obj.DoMotionFilter(params), dest);
+                [r,f] = obj.DoMotionFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'sobel'
-                obj.GenerateImageIcon(5,obj.DoSobelFilter(params), dest);
+                [r,f] = obj.DoSobelFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'prewitt'
-                obj.GenerateImageIcon(5,obj.DoPrewittFilter(params), dest);
+                [r,f] = obj.DoPrewittFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'unsharp'
-                obj.GenerateImageIcon(5,obj.DoUnsharpFilter(params), dest);
+                [r,f] = obj.DoUnsharpFilter(params); 
+                obj.GenerateImageIcon(5,r, dest);
+                obj.GenerateImageIcon(8,f, fimg);
             case 'lowpass'
                 switch(variety)
                     case 'ideal'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoLowpassIdealFilter(params), dest);                        
+                        [r,f] = obj.DoLowpassIdealFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);                      
                     case 'gaussian'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoLowpassGaussianFilter(params), dest);
+                        [r,f] = obj.DoLowpassGaussianFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);       
                     case 'butterworth'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoLowpassButterworthFilter(params), dest);
+                        [r,f] = obj.DoLowpassButterworthFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);       
                     otherwise
                         disp('bad filter type')
                 end       
             case 'highpass'
                 switch(variety)
                     case 'ideal'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoHighpassIdealFilter(params), dest);                        
+                        [r,f] = obj.DoHighpassIdealFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);                             
                     case 'gaussian'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoHighpassGaussianFilter(params), dest);
+                        [r,f] = obj.DoHighpassGaussianFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);      
                     case 'butterworth'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoHighpassButterworthFilter(params), dest);
+                        [r,f] = obj.DoHighpassButterworthFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);      
                     otherwise
                         disp('bad filter type')
                 end
             case 'bandpass'
                 switch(variety)
                     case 'ideal'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoBandpassIdealFilter(params), dest);                        
+                        [r,f] = obj.DoBandpassIdealFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);                           
                     case 'gaussian'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoBandpassGaussianFilter(params), dest);
+                        [r,f] = obj.DoBandpassGaussianFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);  
                     case 'butterworth';
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoBandpassButterworth(params), dest);
+                        [r,f] = obj.DoBandpassButterworthFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);  
                     otherwise
                         disp('bad filter type')
                 end       
             case 'bandreject'
                 switch(variety)
                     case 'ideal'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoBandrejectIdealFilter(params), dest);                        
+                        [r,f] = obj.DoBandrejectIdealFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);                     
                     case 'gaussian'
-                        obj.GenerateImageIcon(5, ...
-                            obj.DoBandrejectGaussianFilter(params), dest);
+                        [r,f] = obj.DoBandrejectGaussianFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);  
                     case 'butterworth'
-                        obj.GenerateImageIcon(5, ...
-                           obj.DoBandrejectButterworthFilter(params),dest);
+                        [r,f] = obj.DoBandrejectButterworthFilter(params); 
+                        obj.GenerateImageIcon(5,r, dest);
+                        obj.GenerateImageIcon(8,f, fimg);  
                     otherwise
                         disp('bad filter type')
                 end   
@@ -201,131 +235,152 @@ classdef controller < handle
         end        
       end
       
-       function r = DoAverageFilter(obj, params)      
+       function [r,f] = DoAverageFilter(obj, params)      
         avg_filter = algorithm_tools(obj.GetModel());     
         avg_filter.AverageFilter(4,params);        
-        r = avg_filter.GetResult();          
+        r = avg_filter.GetResult();       
+        f = avg_filter.GetFilter();
        end
       
-       function r = DoDiskFilter(obj, params)      
+       function [r,f] = DoDiskFilter(obj, params)      
         disk_filter = algorithm_tools(obj.GetModel());     
         disk_filter.DiskFilter(4,params);        
-        r = disk_filter.GetResult();          
+        r = disk_filter.GetResult();     
+        f = disk_filter.GetFilter();
        end
        
-       function r = DoMotionFilter(obj, params)      
+       function [r,f] = DoMotionFilter(obj, params)      
         motion_filter = algorithm_tools(obj.GetModel());     
         motion_filter.MotionFilter(4,params);        
-        r = motion_filter.GetResult();          
+        r = motion_filter.GetResult();      
+        f = motion_filter.GetFilter();
        end
        
-       function r = DoLaplacianFilter(obj, params)      
+       function [r,f] = DoLaplacianFilter(obj, params)      
         laplacian_filter = algorithm_tools(obj.GetModel());     
         laplacian_filter.LaplacianFilter(4,params);        
-        r = laplacian_filter.GetResult();          
+        r = laplacian_filter.GetResult();     
+        f = laplacian_filter.GetFilter();
        end
        
-       function r = DoSobelFilter(obj, params)      
+       function [r,f] = DoSobelFilter(obj, params)      
         sobel_filter = algorithm_tools(obj.GetModel());     
         sobel_filter.SobelFilter(4,params);        
-        r = sobel_filter.GetResult();          
+        r = sobel_filter.GetResult();  
+        f = sobel_filter.GetFilter();
        end
        
-       function r = DoGaussianFilter(obj, params)      
+       function [r,f] = DoGaussianFilter(obj, params)      
         gaussian_filter = algorithm_tools(obj.GetModel());     
         gaussian_filter.GaussianFilter(4,params);        
-        r = gaussian_filter.GetResult();          
+        r = gaussian_filter.GetResult();   
+        f = gaussian_filter.GetFilter();
        end
        
-       function r = DoLogFilter(obj, params)      
+       function [r,f] = DoLogFilter(obj, params)      
         log_filter = algorithm_tools(obj.GetModel());     
         log_filter.LogFilter(4,params);        
-        r = log_filter.GetResult();          
+        r = log_filter.GetResult(); 
+        f = log_filter.GetFilter();
        end
        
-       function r = DoPrewittFilter(obj, params)      
+       function [r,f] = DoPrewittFilter(obj, params)      
         prewitt_filter = algorithm_tools(obj.GetModel());     
         prewitt_filter.PrewittFilter(4,params);        
-        r = prewitt_filter.GetResult();          
+        r = prewitt_filter.GetResult();      
+        f = prewitt_filter.GetFilter();
        end
        
-       function r = DoUnsharpFilter(obj, params)      
+       function [r,f] = DoUnsharpFilter(obj, params)      
         unsharp_filter = algorithm_tools(obj.GetModel());     
         unsharp_filter.UnsharpFilter(4,params);        
         r = unsharp_filter.GetResult();          
+        f = unsharp_filter.GetFilter();
        end       
    %    high pass filters       
-       function r = DoHighpassIdealFilter(obj, params)
+       function [r,f] = DoHighpassIdealFilter(obj, params)
         hpideal_filter = algorithm_tools(obj.GetModel());
         hpideal_filter.HPFIdeal(4, params);
         r = hpideal_filter.GetResult();
+        f = hpideal_filter.GetFilter();
        end
-       function r = DoHighpassGaussianFilter(obj, params)
+       function [r,f] = DoHighpassGaussianFilter(obj, params)
         hpgauss_filter = algorithm_tools(obj.GetModel());
         hpgauss_filter.HPFGaussian(4, params);
         r = hpgauss_filter.GetResult();
+        f = hpgauss_filter.GetFilter();
        end       
-       function r = DoHighpassButterworthFilter(obj, params)
+       function [r,f] = DoHighpassButterworthFilter(obj, params)
         hpbutter_filter = algorithm_tools(obj.GetModel());
         hpbutter_filter.HPFButterworth(4, params);
         r = hpbutter_filter.GetResult();
+        f = hpbutter_filter.GetFilter();
        end       
   %    low pass filters       
-       function r = DoLowpassIdealFilter(obj, params)
+       function [r,f] = DoLowpassIdealFilter(obj, params)
         lpideal_filter = algorithm_tools(obj.GetModel());
         lpideal_filter.LPFIdeal(4, params);
         r = lpideal_filter.GetResult();
+        f = lpideal_filter.GetFilter();
        end
-       function r = DoLowpassGaussianFilter(obj, params)
+       function [r,f] = DoLowpassGaussianFilter(obj, params)
         lpgauss_filter = algorithm_tools(obj.GetModel());
         lpgauss_filter.LPFGaussian(4, params);
         r = lpgauss_filter.GetResult();
+        f = lpgauss_filter.GetFilter();
        end       
-       function r = DoLowpassButterworthFilter(obj, params)
+       function [r,f] = DoLowpassButterworthFilter(obj, params)
         lpbutter_filter = algorithm_tools(obj.GetModel());
         lpbutter_filter.LPFButterworth(4, params);
         r = lpbutter_filter.GetResult();
+        f = lpbutter_filter.GetFilter();
        end
    %    bandpass filters
-       function r = DoBandpassIdealFilter(obj, params)
+       function [r,f] = DoBandpassIdealFilter(obj, params)
         bpideal_filter = algorithm_tools(obj.GetModel());
         bpideal_filter.BandpassIdeal(4, params);
         r = bpideal_filter.GetResult();
+        f = bpideal_filter.GetFilter();
        end       
-       function r = DoBandpassGaussianFilter(obj, params)
-        bpbutter_filter = algorithm_tools(obj.GetModel());
-        bpbutter_filter.BandpassGaussian(4, params);
-        r = bpbutter_filter.GetResult();
+       function [r,f] = DoBandpassGaussianFilter(obj, params)
+        bpgaussian_filter = algorithm_tools(obj.GetModel());
+        bpgaussian_filter.BandpassGaussian(4, params);
+        r = bpgaussian_filter.GetResult();
+        f = bpgaussian_filter.GetFilter();
        end       
-       function r = DoBandpassButterworth(obj, params)
+       function [r,f] = DoBandpassButterworthFilter(obj, params)
         bpbutter_filter = algorithm_tools(obj.GetModel());
         bpbutter_filter.BandpassButterworth(4, params);
         r = bpbutter_filter.GetResult();
+        f = bpbutter_filter.GetFilter();
        end       
    %    bandreject filters
-       function r = DoBandrejectIdealFilter(obj, params)
+       function [r,f] = DoBandrejectIdealFilter(obj, params)
         brideal_filter = algorithm_tools(obj.GetModel());
         brideal_filter.BandrejectIdeal(4, params);
         r = brideal_filter.GetResult();
+        f = brideal_filter.GetFilter();
        end       
-       function r = DoBandrejectGaussianFilter(obj, params)
+       function [r,f] = DoBandrejectGaussianFilter(obj, params)
         brgauss_filter = algorithm_tools(obj.GetModel());
         brgauss_filter.BandrejectGaussian(4, params);
         r = brgauss_filter.GetResult();
+        f = brgauss_filter.GetFilter();
        end       
-       function r = DoBandrejectButterworthFilter(obj, params)
+       function [r,f] = DoBandrejectButterworthFilter(obj, params)
         brbutter_filter = algorithm_tools(obj.GetModel());
         brbutter_filter.BandrejectButterworth(4, params);
         r = brbutter_filter.GetResult();
+        f = brbutter_filter.GetFilter();
        end
    %    notch filter
-       function r = DoNotchFilterInit(obj, idx)
+       function [r] = DoNotchFilterInit(obj, idx)
         nr_filter = algorithm_tools(obj.GetModel());
         nr_filter.NotchFilterInit(idx);
         r = nr_filter.GetResult();
        end
    %    Sinusoid
-       function r = GenerateSinusoid(obj, idx, params, dest)
+       function [r] = GenerateSinusoid(obj, idx, params, dest)
         sin_shape = algorithm_tools(obj.GetModel());
         sin_shape.Sinusoid(params);
         r = sin_shape.GetResult();           

@@ -185,12 +185,14 @@ function project2_gui_final()
     phase_img = view.ImageWindow(phase_image_panel, [0.075,0.07, .85, .85], zeros(img_icon)); 
     draw_spect_button = view.Button(spectrum_panel,'draw spectrum',8,[.15,.05,.17,.05],@drawSpectrumCB);         
 %% Construct the Filtering area
-    img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.25,img_size,img_size]);    
+    img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.07,img_size,img_size]);    
     filt_img4 = view.ImageWindow(img4_panel, [0.075,0.07, .85, .85], zeros(img_icon));
     img4_path = view.Edit(img4_panel, 8, [0.125,0, .60, .07]);
     img4_btn  = view.Button(img4_panel, 'load', 8, [.725, 0, .15, .07], @file4CB);    
-    img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.25,img_size,img_size]);
+    img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.05,img_size,img_size]);
     filt_img5 = view.ImageWindow(img5_panel, [0.075,0.07, .85, .85], zeros(img_icon));
+    filter_image_panel = view.Container(tab3,panel_color,'Filter Used',10,[1-img_size,img_size+.05,img_size,img_size]);
+    filt_img8 = view.ImageWindow(filter_image_panel, [0.075,0.07, .85, .85], zeros(img_icon));
     img5_save_btn = view.Button(img5_panel, 'Save', 8, [0.125, 0, .19, .07], @saveFilteredImage);        
     filter_select_panel = view.Container(tab3,panel_color,'Select', 10, [.001, .75, img_size,img_size/2]);
     ftechnique_label = view.Label(filter_select_panel, 'Technique:', 10, [0.001 0.71 0.25 0.2]);
@@ -202,13 +204,14 @@ function project2_gui_final()
     % frequency response dropdown
     set(impRespDD,'Visible','off');
     freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqSelectionChanged);
-    filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [1-img_size, .75, img_size,img_size/2]);
+    filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [.001, img_size+.07, img_size,img_size/2]);
     filter_size_label_x = view.Label(filter_config_panel, 'Cutoff Freq:', 10, [0.001 0.74 0.25 0.2]);
     filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.2]);
     filter_size_label_y = view.Label(filter_config_panel, 'Order(n):', 10, [0.001 0.58 0.25 0.2]);
     filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.2]);
     filter_size_label_z = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.2]);
     filter_size_value_z = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.2]);
+    
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);     
     filter_x_widgets = [filter_size_label_x,filter_size_value_x];
     filter_y_widgets = [filter_size_label_y, filter_size_value_y];
@@ -555,10 +558,11 @@ function project2_gui_final()
             double(str2double(get(filter_size_value_z, 'String')))];            
         if(strcmp(filterTypes{get(filterDD, 'Value')},'Impulse Response')==0)
             ctrl.DoFiltering(frequencyResponseTypes{get(freqRespDD,'Value')},...
-            params, filt_img5, frequencyVarietyTypes{get(freqVarietyDD, 'Value')},filt_img4);
+            params, filt_img5, frequencyVarietyTypes{get(freqVarietyDD, 'Value')},filt_img4,filt_img8);
         else
             ctrl.DoFiltering(impulseResponseTypes{get(impRespDD,'Value')},...
-            params, filt_img5, 0,4);
+            params, filt_img5, 0,4,filt_img8);
         end
     end
+
 end

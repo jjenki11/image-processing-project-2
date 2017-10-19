@@ -3,6 +3,7 @@ classdef algorithm_tools < handle
         % tbd we can put parent in here so we dont have to pass it
         DataModel = struct
         Result
+        Filter
    end
    methods      
       % constructor for the algorithm tools class
@@ -30,6 +31,7 @@ classdef algorithm_tools < handle
       function obj = DiskFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('disk',params(1));
+        obj.SetFilter(h);
         pad=max(params(1));
         xp=softpad(i1,pad,pad,pad,pad); 
         cr=conv2(double(xp), h, 'valid');
@@ -37,7 +39,8 @@ classdef algorithm_tools < handle
       end      
       function obj = AverageFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
-        h = fspecial('average',[params(1), params(2)]);
+        h = fspecial('average',[params(1), params(2)]);        
+        obj.SetFilter(h);
         pad=max(params(1:2));
         xp=softpad(i1,pad,pad,pad,pad); 
         cr = conv2(double(xp),h,'valid');
@@ -46,6 +49,7 @@ classdef algorithm_tools < handle
       function obj = MotionFilter(obj, idx, params)
           i1 = obj.GetModel().GetImageData(idx);
           h = fspecial('motion', params(1), params(2));
+          obj.SetFilter(h);
           pad=max(params(1:2));
           xp=softpad(i1,pad,pad,pad,pad); 
           cr = conv2(double(xp), double(h),'valid');
@@ -54,12 +58,14 @@ classdef algorithm_tools < handle
       function obj = SobelFilter(obj, idx, params)
           i1 = obj.GetModel().GetImageData(idx);
           h=fspecial('sobel');
+          obj.SetFilter(h);
           cr=conv2(double(i1), h,'valid');
           obj.SetResult(cr);    
       end      
       function obj = LaplacianFilter(obj, idx, params)
           i1 = obj.GetModel().GetImageData(idx);
           h=fspecial('laplacian',params(1));
+          obj.SetFilter(h);
           cr=conv2((i1),(h),'valid');
           obj.SetResult(cr);  
       end      
@@ -70,6 +76,7 @@ classdef algorithm_tools < handle
         hx2=repmat(hx,[params(2),1]); 
         hy2=repmat(hy,[1,params(1)]);
         h=hx2.*hy2;
+        obj.SetFilter(h);
         pad=max(params(1:2));
         xp=softpad(i1,pad,pad,pad,pad);
         cr=conv2(double(xp), h, 'valid'); 
@@ -78,6 +85,7 @@ classdef algorithm_tools < handle
       function obj = LogFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('log',[params(1) params(2)],params(3));
+        obj.SetFilter(h);
         pad=max(params(1:2));
         xp=softpad(i1,pad,pad,pad,pad);
         cr=conv2(double(xp), h, 'valid');
@@ -86,12 +94,14 @@ classdef algorithm_tools < handle
       function obj = PrewittFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('prewitt');
+        obj.SetFilter(h);
         cr=conv2(double(i1), h, 'valid');
         obj.SetResult(cr); 
       end     
       function obj = UnsharpFilter(obj, idx, params)
         i1 = obj.GetModel().GetImageData(idx);
         h=fspecial('unsharp',params(1));
+        obj.SetFilter(h);
         cr=conv2(double(i1), h, 'valid');
         obj.SetResult(cr); 
       end      
@@ -109,6 +119,7 @@ classdef algorithm_tools < handle
         D=sqrt(F1.^2+F2.^2);
         D(D==0)=eps; % prevent divide by zero
         H = (D <= D0);
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -125,6 +136,7 @@ classdef algorithm_tools < handle
         D=U.^2+V.^2;
         D0 = params(1);  % cycles/sample
         H = exp( -D/(2*D0^2));
+        obj.SetFilter(H);
         H2=ifftshift(H);
         Y=H2.*X;
         y=ifft2(Y);
@@ -142,6 +154,7 @@ classdef algorithm_tools < handle
         D=sqrt(U.^2+V.^2);
         D0 = params(1);  % cycles/sample
         H=1./(1+((D./D0).^(2*n)));
+        obj.SetFilter(H);
         H2=ifftshift(H);
         Y=H2.*X;
         y=ifft2(Y);
@@ -162,6 +175,7 @@ classdef algorithm_tools < handle
         D=sqrt(F1.^2+F2.^2);
         D(D==0)=eps; % prevent divide by zero
         H = (D > D0);
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -181,6 +195,7 @@ classdef algorithm_tools < handle
         D=sqrt(F1.^2+F2.^2);
         D(D==0)=eps; % prevent divide by zero
         H=1-exp(-(D.^2./(2*D0.^2)));
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -201,6 +216,7 @@ classdef algorithm_tools < handle
         D=sqrt(F1.^2+F2.^2);
         D(D==0)=eps; % prevent divide by zero
         H=1./(1+(D0./D).^(2*n));
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -224,6 +240,7 @@ classdef algorithm_tools < handle
         h1 = (D >= (D0 - (W/2)));
         h2 = (D <= (D0 + W/2));        
         H = h1 .* h2;
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -248,7 +265,7 @@ classdef algorithm_tools < handle
         numer = D.^2.-D0.^2;
         numer(numer==0)=eps;
         H = 1-(1-(exp(-(numer./dw).^2)));
-%         figure,imshow(H)
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -274,6 +291,7 @@ classdef algorithm_tools < handle
         denom = D.^2.-D0.^2;
         denom(denom==0)=eps;
         H = 1 - (1 ./ (1 + (dw./denom).^(2*n)) );
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -297,6 +315,7 @@ classdef algorithm_tools < handle
         h1 = (D >= (D0 - (W/2)));
         h2 = (D <= (D0 + W/2));        
         H = 1 - (h1 .* h2);
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -321,7 +340,7 @@ classdef algorithm_tools < handle
         numer = D.^2.-D0.^2;
         numer(numer==0)=eps;
         H = (1-(exp(-(numer./dw).^2)));
-%         figure,imshow(H)
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -347,6 +366,7 @@ classdef algorithm_tools < handle
         denom = D.^2.-D0.^2;
         denom(denom==0)=eps;
         H = (1 ./ (1 + (dw./denom).^(2*n)) );
+        obj.SetFilter(H);
         H2=ifftshift(H); 
         Y=H2.*X;
         y=ifft2(Y);
@@ -424,6 +444,9 @@ classdef algorithm_tools < handle
       function r = GetResult(obj)
           r = obj.Result;
       end
+      function r = GetFilter(obj)
+          r = obj.Filter;
+      end
       % sets the model
       function obj = SetModel(obj, m)
           obj.DataModel = m;
@@ -431,6 +454,9 @@ classdef algorithm_tools < handle
       % sets the result
       function obj = SetResult(obj, r)
           obj.Result = r;
+      end
+      function obj = SetFilter(obj, f)
+          obj.Filter = f;
       end
    end
 end
