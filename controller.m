@@ -14,12 +14,16 @@ classdef controller < handle
   %     select image from file
       function obj = SelectFile(obj, parent, txt, idx, i_update)
          p = obj.GetView().FileBrowser(parent,[0.1 0.37 0.4 0.2],[]);
-        set(txt,'String',p);
-        img = imread(p); sz = size(img);
-        if(numel(sz)>2) 
-            img = rgb2gray(img); 
+        if exist(p, 'file') == 2
+            set(txt,'String',p);
+            img = imread(p); sz = size(img);
+            if(numel(sz)>2) 
+                img = rgb2gray(img); 
+            end
+            obj.GenerateImageIcon(idx, img, i_update);
+        else
+            disp('Please select a valid file');
         end
-        obj.GenerateImageIcon(idx, img, i_update);
       end
       % reset the image at the index  provided with content
       function obj = Reset(obj, img, content)
@@ -31,8 +35,7 @@ classdef controller < handle
         maxv = max(xx(:));
         mapped_array = uint8((double(xx) ./ maxv) .* 255);
         colormap(gray(255));
-        obj.GetView().FileSaver(p, [0.1, 0.37, 0.4, 0.2], mapped_array);
-        disp('File saved!'); 
+        obj.GetView().FileSaver(p, [0.1, 0.37, 0.4, 0.2], mapped_array);        
       end
   %     convolution
       function obj = DoConvolution(obj, slot)

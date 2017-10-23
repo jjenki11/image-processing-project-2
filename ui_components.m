@@ -68,7 +68,12 @@ classdef ui_components
       function r = FileSaver(obj, p, pos, img)
          [file,path] = uiputfile('*.*','Save file to disk...');
          r = strcat(path, file);
-         imwrite(img, r);
+         if exist(char(path), 'file') == 7
+             imwrite(img, r);
+             disp('File saved!'); 
+         else
+             disp('please select a valid save location.'); 
+         end
       end
       
       % slider wrapper
@@ -78,9 +83,27 @@ classdef ui_components
                         'Value', val,'Callback', cb);
       end
       % edit wrapper
-      function r = Edit(obj, p, fs, pos)
+      function r = Edit(obj, p, fs, pos, tstr)
+%           tstr = '';
+%           disp(tip)
+%           if(strcmp(tip(1),'-1') == 1)
+%               if(strcmp(tip(2), '-1') == 1)                  
+%                 disp('case1')
+%               else
+%                 tstr = char(tip(2));
+%                 disp('case2')
+%               end
+%           else
+%               rng1 = sprintf('%.5s',tip(1)); rng2 = sprintf('%.5s',tip(2));
+%               tmp0 = 'Please enter a value between  ';
+%               tmp1 = strcat({rng1}, {' '},{'and'}, {' '},{rng2});
+%               tstr = strcat(tmp0,{' '},tmp1);
+%               disp('case3')
+%           end
+%           disp(tstr);
           r = uicontrol('Parent', p, 'Style', 'edit', 'FontSize', fs,...
-                        'Units', 'normalized','Position', pos);          
+                        'Units', 'normalized','Position', pos,...
+                        'ToolTipString', char(tstr));          
       end
       % label wrapper
       function r = Label(obj, p, str, fs, pos)

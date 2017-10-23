@@ -62,36 +62,36 @@ function project2_gui_final()
     conv_imageDD = view.DropDown(convolve_options_panel,convolveImageTypes, [0.15, 0.81, 0.32, 0.15], @convImageTypeDDCallback);
     % sinusoid opts
     conv_sin_label_u = view.Label(convolve_options_panel, 'U Freq:', 10, [0.001 0.64 0.25 0.15]);
-    conv_sin_value_u = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15]);    
+    conv_sin_value_u = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15], 'Please enter a value between 3^-6 and 1^307');    
     conv_sin_label_v = view.Label(convolve_options_panel, 'V Freq:', 10, [0.001 0.44 0.25 0.15]);
-    conv_sin_value_v = view.Edit(convolve_options_panel, 8, [0.25 0.44 0.25 0.15]);   
+    conv_sin_value_v = view.Edit(convolve_options_panel, 8, [0.25 0.44 0.25 0.15],'Please enter a value between 3^-6 and 1^307');   
     conv_sinusoid_widgets = [conv_sin_label_u,conv_sin_value_u,conv_sin_label_v,conv_sin_value_v];
     all_conv_widgets=[all_conv_widgets, conv_sinusoid_widgets];    
     % single circle opts
     conv_one_circle_label_r = view.Label(convolve_options_panel, 'Radius:', 10, [0.001 0.64 0.25 0.15]);
-    conv_one_circle_value_r = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15]);    
+    conv_one_circle_value_r = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15],'Please enter a value between 1^-323 and 128');    
     conv_single_circle_widgets = [conv_one_circle_label_r,conv_one_circle_value_r];
     all_conv_widgets=[all_conv_widgets, conv_single_circle_widgets];    
     % single rectangle opts
     conv_one_rect_label_w = view.Label(convolve_options_panel, 'Width:', 10, [0.001 0.64 0.25 0.15]);
-    conv_one_rect_value_w = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15]);    
+    conv_one_rect_value_w = view.Edit(convolve_options_panel, 8, [0.25 0.64 0.25 0.15],'Please enter a value between 0 and 255');    
     conv_one_rect_label_h = view.Label(convolve_options_panel, 'Height:', 10, [0.001 0.44 0.25 0.15]);
-    conv_one_rect_value_h = view.Edit(convolve_options_panel, 8, [0.25 0.44 0.25 0.15]);    
+    conv_one_rect_value_h = view.Edit(convolve_options_panel, 8, [0.25 0.44 0.25 0.15],'Please enter a value between 0 and 255');    
     conv_single_rectangle_widgets = [conv_one_rect_label_w,conv_one_rect_value_w,conv_one_rect_label_h,conv_one_rect_value_h];
     all_conv_widgets=[all_conv_widgets,conv_single_rectangle_widgets];
     % image from file
-    img1_path = view.Edit(img1_panel, 8, [0.125,0, .60, .07]);
+    img1_path = view.Edit(img1_panel, 8, [0.125,0, .60, .07], [-1,'Select a valid image file.']);
     img1_btn  = view.Button(img1_panel, 'load', 8, [.725, 0, .15, .07], @file1CB);    
     img1_from_path_widgets = [img1_path,img1_btn];
-    img2_path = view.Edit(img2_panel, 8, [0.125,0, .60, .07]);
+    img2_path = view.Edit(img2_panel, 8, [0.125,0, .60, .07], [-1,'Select a valid image file.']);
     img2_btn  = view.Button(img2_panel, 'load', 8, [.725, 0, .15, .07], @file2CB);   
     img2_from_path_widgets = [img2_path,img2_btn];
     conv_img_from_path_widgets = [img1_from_path_widgets, img2_from_path_widgets];
     all_conv_widgets = [all_conv_widgets, conv_img_from_path_widgets];    
     % image size
     conv_image_label_w = view.Label(convolve_options_panel, 'Image Size (w,h):', 10, [0.001 0.25 0.35 0.1]);
-    conv_image_value_w = view.Edit(convolve_options_panel, 8, [0.37 0.25 0.20 0.1]);       
-    conv_image_value_h = view.Edit(convolve_options_panel, 8, [0.6 0.25 0.20 0.1]);    
+    conv_image_value_w = view.Edit(convolve_options_panel, 8, [0.37 0.25 0.20 0.1],'Please enter a value between 1 and 1000');       
+    conv_image_value_h = view.Edit(convolve_options_panel, 8, [0.6 0.25 0.20 0.1],'Please enter a value between 1 and 1000');    
     conv_image_size_widgets = [conv_image_label_w,conv_image_value_w,conv_image_value_h];
     all_conv_widgets=[all_conv_widgets,conv_image_size_widgets];    
     % apply to image 1, apply to image 2
@@ -111,65 +111,65 @@ function project2_gui_final()
     spectrum_image_options_panel = view.Container(spectrum_panel,panel_color,'Options',10,[0.001,.62,.45,.25]);       
     % sinusoid opts
     spect_sin_label_u = view.Label(spectrum_image_options_panel, 'U Freq:', 10, [0.001 0.64 0.25 0.2]);
-    spect_sin_value_u = view.Edit(spectrum_image_options_panel, 8, [0.25 0.64 0.25 0.2]);    
+    spect_sin_value_u = view.Edit(spectrum_image_options_panel, 8, [0.25 0.64 0.25 0.2],'Please enter a value between 3^-6 and 1^307');    
     spect_sin_label_v = view.Label(spectrum_image_options_panel, 'V Freq:', 10, [0.001 0.44 0.25 0.2]);
-    spect_sin_value_v = view.Edit(spectrum_image_options_panel, 8, [0.25 0.44 0.25 0.2]);   
+    spect_sin_value_v = view.Edit(spectrum_image_options_panel, 8, [0.25 0.44 0.25 0.2],'Please enter a value between 3^-6 and 1^307');   
     sinusoid_widgets = [spect_sin_label_u,spect_sin_value_u,spect_sin_label_v,spect_sin_value_v];
     all_spect_widgets=[all_spect_widgets; sinusoid_widgets];    
     % single circle opts
     spect_one_circle_label_r = view.Label(spectrum_image_options_panel, 'Radius:', 10, [0.001 0.64 0.25 0.2]);
-    spect_one_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.64 0.25 0.15]);    
+    spect_one_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.64 0.25 0.15],'Please enter a value between 1^-323 and 128');    
     single_circle_widgets = [spect_one_circle_label_r,spect_one_circle_value_r];
     all_spect_widgets=[all_spect_widgets, single_circle_widgets];    
     % single rectangle opts
     spect_one_rect_label_w = view.Label(spectrum_image_options_panel, 'Width:', 10, [0.001 0.74 0.25 0.2]);
-    spect_one_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2]);    
+    spect_one_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between 0 and 255');    
     spect_one_rect_label_h = view.Label(spectrum_image_options_panel, 'Height:', 10, [0.001 0.54 0.25 0.2]);
-    spect_one_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2]);    
+    spect_one_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2],'Please enter a value between 0 and 255');    
     single_rectangle_widgets = [spect_one_rect_label_w,spect_one_rect_value_w,spect_one_rect_label_h,spect_one_rect_value_h];
     all_spect_widgets=[all_spect_widgets, single_rectangle_widgets];    
     % multiple circles opts
     spect_multi_rect_label_w = view.Label(spectrum_image_options_panel, 'Width:', 10, [0.001 0.74 0.25 0.2]);
-    spect_multi_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2]);    
+    spect_multi_rect_value_w = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between 0 and 255');    
     spect_multi_rect_label_h = view.Label(spectrum_image_options_panel, 'Height:', 10, [0.001 0.54 0.25 0.2]);
-    spect_multi_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2]);    
+    spect_multi_rect_value_h = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2],'Please enter a value between 0 and 255');    
     spect_multi_rect_label_x = view.Label(spectrum_image_options_panel, 'Period(x):', 10, [0.001 0.34 0.25 0.2]);
-    spect_multi_rect_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.2]);    
+    spect_multi_rect_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.2],'Please enter a value between 1 and 256');    
     spect_multi_rect_label_y = view.Label(spectrum_image_options_panel, 'Period(y):', 10, [0.001 0.14 0.25 0.2]);
-    spect_multi_rect_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.14 0.25 0.2]);    
+    spect_multi_rect_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.14 0.25 0.2],'Please enter a value between 1 and 256');    
     multiple_rectangles_widgets = [spect_multi_rect_label_w,spect_multi_rect_value_w,spect_multi_rect_label_h,spect_multi_rect_value_h,...
         spect_multi_rect_label_x,spect_multi_rect_value_x,spect_multi_rect_label_y,spect_multi_rect_value_y];
     all_spect_widgets=[all_spect_widgets, multiple_rectangles_widgets];    
     % multiple circles opts
     spect_multi_circle_label_r = view.Label(spectrum_image_options_panel, 'Radius:', 10, [0.001 0.74 0.25 0.2]);
-    spect_multi_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2]);   
+    spect_multi_circle_value_r = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between 1 and 1^3');   
     spect_multi_circle_label_x = view.Label(spectrum_image_options_panel, 'Period(x):', 10, [0.001 0.54 0.25 0.2]);
-    spect_multi_circle_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2]);    
+    spect_multi_circle_value_x = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2],'Please enter a value between 1 and 50');    
     spect_multi_circle_label_y = view.Label(spectrum_image_options_panel, 'Period(y):', 10, [0.001 0.34 0.25 0.2]);
-    spect_multi_circle_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.2]);    
+    spect_multi_circle_value_y = view.Edit(spectrum_image_options_panel, 8, [0.25 0.34 0.25 0.2],'Please enter a value between 1 and 50');    
     multiple_circles_widgets = [spect_multi_circle_label_r,spect_multi_circle_value_r,spect_multi_circle_label_x,...
         spect_multi_circle_value_x,spect_multi_circle_label_y,spect_multi_circle_value_y];    
     all_spect_widgets=[all_spect_widgets, multiple_circles_widgets];    
     % single stripes opts
     single_stripe_label_dir = view.Label(spectrum_image_options_panel, 'Rotation:', 10, [0.001 0.74 0.25 0.2]);
-    single_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2]);
+    single_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between 0 and 360');
     single_stripe_widgets = [single_stripe_label_dir,single_stripe_value_dir];    
     all_spect_widgets=[all_spect_widgets, single_stripe_widgets];    
     % multiple stripes opts
     multiple_stripe_label_num = view.Label(spectrum_image_options_panel, 'Number:', 10, [0.001 0.74 0.25 0.2]);
-    multiple_stripe_value_num = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2]);    
+    multiple_stripe_value_num = view.Edit(spectrum_image_options_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between 1 and 1^307');    
     multiple_stripe_label_dir = view.Label(spectrum_image_options_panel, 'Rotation:', 10, [0.001 0.54 0.25 0.2]);
-    multiple_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2]);    
+    multiple_stripe_value_dir = view.Edit(spectrum_image_options_panel, 8, [0.25 0.54 0.25 0.2],'Please enter a value between 0 and 360');    
     multiple_stripes_widgets = [multiple_stripe_label_num,multiple_stripe_value_num,multiple_stripe_label_dir,multiple_stripe_value_dir];
     all_spect_widgets=[all_spect_widgets, multiple_stripes_widgets];
     % image from file
-    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.23,0, .57, .07]);
+    spect_img_path = view.Edit(spectrum_image_panel, 8, [0.23,0, .57, .07],[-1,'A valid path to an image']);
     spect_img_btn  = view.Button(spectrum_image_panel, 'load', 8, [.8, 0, .2, .07], @spectImageFileCB);      
     img_from_file_widgets = [spect_img_path,spect_img_btn];    
     all_spect_widgets=[all_spect_widgets, img_from_file_widgets];       
     spect_image_label_w = view.Label(spectrum_image_options_panel, 'Image Size (w,h):', 10, [1-.44 0.78 0.4 0.2]);
-    spect_image_value_w = view.Edit(spectrum_image_options_panel, 8, [1-.45 0.57 0.17 0.2]);       
-    spect_image_value_h = view.Edit(spectrum_image_options_panel, 8, [1-.2 0.57 0.17 0.2]);    
+    spect_image_value_w = view.Edit(spectrum_image_options_panel, 8, [1-.45 0.57 0.17 0.2],'Please enter a value between 1 and 1000');       
+    spect_image_value_h = view.Edit(spectrum_image_options_panel, 8, [1-.2 0.57 0.17 0.2],'Please enter a value between 1 and 1000');    
     spect_image_size_widgets = [spect_image_label_w,spect_image_value_w,spect_image_value_h];
     all_spect_widgets=[all_spect_widgets, spect_image_size_widgets];      
     % generate shape
@@ -187,7 +187,7 @@ function project2_gui_final()
 %% Construct the Filtering area
     img4_panel = view.Container(tab3,panel_color,'Image 1',10,[img_offset,.07,img_size,img_size]);    
     filt_img4 = view.ImageWindow(img4_panel, [0.075,0.07, .85, .85], zeros(img_icon));
-    img4_path = view.Edit(img4_panel, 8, [0.125,0, .60, .07]);
+    img4_path = view.Edit(img4_panel, 8, [0.125,0, .60, .07],['1','1000']);
     img4_btn  = view.Button(img4_panel, 'load', 8, [.725, 0, .15, .07], @file4CB);    
     img5_panel = view.Container(tab3,panel_color,'Result',10,[1-img_size,.05,img_size,img_size]);
     filt_img5 = view.ImageWindow(img5_panel, [0.075,0.07, .85, .85], zeros(img_icon));
@@ -206,11 +206,11 @@ function project2_gui_final()
     freqRespDD= view.DropDown(filter_select_panel,frequencyResponseTypes, [0.27 0.02 0.5 0.5], @freqSelectionChanged);
     filter_config_panel = view.Container(tab3,panel_color,'Setup', 10, [.001, img_size+.07, img_size,img_size/2]);
     filter_size_label_x = view.Label(filter_config_panel, 'Cutoff Freq:', 10, [0.001 0.74 0.25 0.2]);
-    filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.2]);
+    filter_size_value_x = view.Edit(filter_config_panel, 8, [0.25 0.74 0.25 0.2],'Please enter a value between ');
     filter_size_label_y = view.Label(filter_config_panel, 'Order(n):', 10, [0.001 0.58 0.25 0.2]);
-    filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.2]);
+    filter_size_value_y = view.Edit(filter_config_panel, 8, [0.25 0.58 0.25 0.2],'Please enter a value between ');
     filter_size_label_z = view.Label(filter_config_panel, 'Std Dev:', 10, [0.001 0.42 0.25 0.2]);
-    filter_size_value_z = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.2]);
+    filter_size_value_z = view.Edit(filter_config_panel, 8, [0.25 0.42 0.25 0.2],'Please enter a value between ');
     
     filt_button = view.Button(tab3,'filter',8,[.47,.5,.07,.05],@filtCB);     
     filter_x_widgets = [filter_size_label_x,filter_size_value_x];
@@ -446,13 +446,17 @@ function project2_gui_final()
                     case 'ideal'
                         view.ShowWidgets(filter_x_widgets);
                         set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 6.5^-1');
                     case 'gaussian'
                         view.ShowWidgets(filter_x_widgets);            
                         set(filter_size_label_x,'String','Cycles/samp.');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 2^6');
                     case 'butterworth'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cycles/samp.');
                         set(filter_size_label_y,'String','Order(n)');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 2^6');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 1 and 100');
                     otherwise
                         disp('bad response type')
                 end
@@ -461,13 +465,17 @@ function project2_gui_final()
                     case 'ideal'
                         view.ShowWidgets(filter_x_widgets);
                         set(filter_size_label_x,'String','Cutoff freq.');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 4^-1');
                     case 'gaussian'
                         view.ShowWidgets(filter_x_widgets);            
                         set(filter_size_label_x,'String','Cycles/samp.');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 2^6');
                     case 'butterworth'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cycles/samp.');
                         set(filter_size_label_y,'String','Order(n)');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-2 and 1^4');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 1 and 100');
                     otherwise
                         disp('bad response type')
                 end                
@@ -477,15 +485,22 @@ function project2_gui_final()
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 6.5^-1');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
                     case 'gaussian'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 6.5^-1');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
                     case 'butterworth'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
                         set(filter_size_label_z,'String','Order(n)');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 3^2');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
+                        set(filter_size_value_z,'ToolTipString','Input a value between 1 and 100');
                     otherwise
                         disp('bad response type')
                 end
@@ -495,15 +510,22 @@ function project2_gui_final()
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 1^-1');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
                     case 'gaussian'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 1^-1');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
                     case 'butterworth'
                         view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
                         set(filter_size_label_x,'String','Cutoff freq.');
                         set(filter_size_label_y,'String','Bandwidth');
                         set(filter_size_label_z,'String','Order(n)');
+                        set(filter_size_value_x,'ToolTipString','Input a value between 1^-3 and 1^-1');
+                        set(filter_size_value_y,'ToolTipString','Input a value between 0 and 1.2');
+                        set(filter_size_value_z,'ToolTipString','Input a value between 1 and 100');
                     otherwise
                         disp('bad response type')
                 end
@@ -521,25 +543,37 @@ function project2_gui_final()
                 view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                 set(filter_size_label_x,'String','Width');
                 set(filter_size_label_y,'String','Height');
+                set(filter_size_value_x,'ToolTipString','Input a value between 1 and 900');
+                set(filter_size_value_y,'ToolTipString','Input a value between 1 and 900');
             case 'disk'
                 view.ShowWidgets([filter_x_widgets]);
                 set(filter_size_label_x,'String','Radius');
+                set(filter_size_value_x,'ToolTipString','Input a value between 1 and 100');
             case 'gaussian'
                 view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
                 set(filter_size_label_x,'String','Width');
                 set(filter_size_label_y,'String','Height');
                 set(filter_size_label_z,'String','Sigma');
+                set(filter_size_value_x,'ToolTipString','Input a value between 1 and 256');
+                set(filter_size_value_y,'ToolTipString','Input a value between 1 and 256');
+                set(filter_size_value_z,'ToolTipString','Input a value between 1^-1 and 1^7');
             case 'laplacian'
                 view.ShowWidgets([filter_x_widgets]);
+                set(filter_size_value_x,'ToolTipString','Input a value between 0 and 1');
             case 'log'
                 view.ShowWidgets([filter_x_widgets,filter_y_widgets,filter_z_widgets]);
                 set(filter_size_label_x,'String','Rows');
                 set(filter_size_label_y,'String','Cols');
                 set(filter_size_label_z,'String','Sigma');
+                set(filter_size_value_x,'ToolTipString','Input a value between 1 and 256');
+                set(filter_size_value_y,'ToolTipString','Input a value between 1 and 256');
+                set(filter_size_value_z,'ToolTipString','Input a value between 1^-80 and 1^7');
             case 'motion'
                 view.ShowWidgets([filter_x_widgets,filter_y_widgets]);
                 set(filter_size_label_x,'String','Length');
                 set(filter_size_label_y,'String','Theta');
+                set(filter_size_value_x,'ToolTipString','Input a value between 2 and 900');
+                set(filter_size_value_y,'ToolTipString','Input a value between 0 360');
             case 'sobel'
                 disp('there are no parameters for this filter.')
             case 'prewitt'
@@ -547,6 +581,7 @@ function project2_gui_final()
             case 'unsharp'
                 view.ShowWidgets([filter_x_widgets]);
                 set(filter_size_label_x,'String','Alpha');
+                set(filter_size_value_x,'ToolTipString','Input a value between 0 and 1');
             otherwise
                 disp('Invalid filter type' );
         end  
